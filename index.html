@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#f8f9ff" />
+    <meta
+      name="description"
+      content="Mindful Momentum is a mobile-first habit tracker for daily rituals, streaks, progress, and achievements."
+    />
+    <title>Mindful Momentum</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23006d36'/%3E%3Cpath d='M17 33c5 10 12 15 21 15 10 0 17-6 20-18' fill='none' stroke='white' stroke-width='6' stroke-linecap='round'/%3E%3Ccircle cx='23' cy='23' r='6' fill='%236dfe9c'/%3E%3C/svg%3E"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="top-app-bar">
+      <button class="icon-button" type="button" aria-label="Open habit library" data-nav-target="library">
+        <span class="material-symbols-outlined" aria-hidden="true">menu</span>
+      </button>
+      <div>
+        <p class="eyebrow">Mindful Momentum</p>
+        <h1 id="screen-title">Today</h1>
+      </div>
+      <button class="icon-button" type="button" aria-label="Open notifications" data-open-notifications>
+        <span class="material-symbols-outlined" aria-hidden="true">notifications</span>
+      </button>
+    </header>
+
+    <main class="app-shell">
+      <section class="screen is-active" id="today-screen" data-screen="today" aria-labelledby="today-heading">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow" id="today-date"></p>
+            <h2 id="today-heading">Daily Rituals</h2>
+          </div>
+          <button class="primary-action" type="button" data-open-add>
+            <span class="material-symbols-outlined" aria-hidden="true">add</span>
+            <span>Habit</span>
+          </button>
+        </div>
+
+        <section class="hero-grid" aria-label="Daily progress summary">
+          <article class="progress-panel">
+            <p class="label">Today's Momentum</p>
+            <div class="ring-wrap" aria-live="polite">
+              <svg class="progress-ring" viewBox="0 0 132 132" role="img" aria-label="Today's completion percentage">
+                <circle class="ring-track" cx="66" cy="66" r="58"></circle>
+                <circle class="ring-value" id="today-ring" cx="66" cy="66" r="58"></circle>
+              </svg>
+              <span class="ring-score" id="today-score">0%</span>
+            </div>
+            <p class="support-text" id="today-summary">Complete one ritual to start today's momentum.</p>
+          </article>
+
+          <article class="focus-card">
+            <div class="focus-icon">
+              <span class="material-symbols-outlined" aria-hidden="true">wb_twilight</span>
+            </div>
+            <div>
+              <p class="label">Next Focus</p>
+              <h3 id="next-habit-title">No habit due</h3>
+              <p id="next-habit-meta">All rituals are complete for today.</p>
+            </div>
+          </article>
+        </section>
+
+        <section class="habit-list" id="today-habits" aria-label="Today's habits"></section>
+      </section>
+
+      <section class="screen" id="library-screen" data-screen="library" aria-labelledby="library-heading">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Library</p>
+            <h2 id="library-heading">Habit Collection</h2>
+          </div>
+          <button class="primary-action" type="button" data-open-add>
+            <span class="material-symbols-outlined" aria-hidden="true">add</span>
+            <span>Habit</span>
+          </button>
+        </div>
+        <div class="library-grid" id="library-habits" aria-label="Saved habits"></div>
+      </section>
+
+      <section class="screen" id="stats-screen" data-screen="stats" aria-labelledby="stats-heading">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Stats</p>
+            <h2 id="stats-heading">Momentum Report</h2>
+          </div>
+        </div>
+        <section class="stats-grid" aria-label="Habit statistics">
+          <article class="stat-card stat-card-large">
+            <p class="label">Weekly Progress</p>
+            <div class="week-chart" id="week-chart"></div>
+          </article>
+          <article class="stat-card">
+            <span class="material-symbols-outlined stat-icon secondary" aria-hidden="true">check_circle</span>
+            <strong id="completed-total">0</strong>
+            <span class="label">Habits Completed</span>
+          </article>
+          <article class="stat-card">
+            <span class="material-symbols-outlined stat-icon primary" aria-hidden="true">local_fire_department</span>
+            <strong id="best-streak">0</strong>
+            <span class="label">Best Streak</span>
+          </article>
+          <article class="stat-card">
+            <span class="material-symbols-outlined stat-icon tertiary" aria-hidden="true">auto_awesome</span>
+            <strong id="achievement-count">0</strong>
+            <span class="label">Achievements</span>
+          </article>
+          <article class="stat-card">
+            <span class="material-symbols-outlined stat-icon error" aria-hidden="true">favorite</span>
+            <strong id="wellness-score">0%</strong>
+            <span class="label">Wellness Rating</span>
+          </article>
+        </section>
+      </section>
+
+      <section class="screen" id="profile-screen" data-screen="profile" aria-labelledby="profile-heading">
+        <section class="profile-hero">
+          <div class="avatar" aria-hidden="true">SR</div>
+          <div class="profile-copy">
+            <h2 id="profile-heading">Sudheer's Momentum</h2>
+            <p>Building calm, repeatable progress one completed ritual at a time.</p>
+            <div class="chip-row">
+              <span class="chip primary-chip">Active Tracker</span>
+              <span class="chip" id="profile-streak-chip">Streak: 0 days</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="achievement-section" aria-labelledby="achievements-heading">
+          <div class="section-heading compact">
+            <div>
+              <h2 id="achievements-heading">Achievements</h2>
+              <p class="support-text">Milestones from your habit history.</p>
+            </div>
+          </div>
+          <div class="achievement-grid" id="achievement-grid"></div>
+        </section>
+
+        <section class="settings-section" aria-labelledby="settings-heading">
+          <h2 id="settings-heading">Settings</h2>
+          <div class="settings-list">
+            <button class="settings-row" type="button" data-export>
+              <span class="material-symbols-outlined" aria-hidden="true">download</span>
+              <span>Export Data</span>
+              <span class="material-symbols-outlined row-end" aria-hidden="true">chevron_right</span>
+            </button>
+            <button class="settings-row" type="button" data-toggle-reminders>
+              <span class="material-symbols-outlined" aria-hidden="true">notifications_active</span>
+              <span>Daily Reminder</span>
+              <span class="toggle" id="reminder-toggle" aria-hidden="true"><span></span></span>
+            </button>
+            <button class="settings-row danger" type="button" data-reset-demo>
+              <span class="material-symbols-outlined" aria-hidden="true">restart_alt</span>
+              <span>Reset Demo Data</span>
+            </button>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <nav class="bottom-nav" aria-label="Primary">
+      <button class="nav-item is-active" type="button" data-nav-target="today">
+        <span class="material-symbols-outlined" aria-hidden="true">calendar_today</span>
+        <span>Today</span>
+      </button>
+      <button class="nav-item" type="button" data-nav-target="library">
+        <span class="material-symbols-outlined" aria-hidden="true">folder_open</span>
+        <span>Library</span>
+      </button>
+      <button class="nav-item" type="button" data-nav-target="stats">
+        <span class="material-symbols-outlined" aria-hidden="true">insights</span>
+        <span>Stats</span>
+      </button>
+      <button class="nav-item" type="button" data-nav-target="profile">
+        <span class="material-symbols-outlined" aria-hidden="true">person</span>
+        <span>Profile</span>
+      </button>
+    </nav>
+
+    <dialog class="habit-dialog" id="habit-dialog">
+      <form method="dialog" class="dialog-card" id="habit-form">
+        <div class="dialog-heading">
+          <div>
+            <p class="eyebrow">New Habit</p>
+            <h2>Create Ritual</h2>
+          </div>
+          <button class="icon-button" type="button" aria-label="Close dialog" data-close-dialog>
+            <span class="material-symbols-outlined" aria-hidden="true">close</span>
+          </button>
+        </div>
+
+        <label>
+          <span>Name</span>
+          <input name="name" type="text" maxlength="36" required placeholder="Morning walk" />
+        </label>
+
+        <label>
+          <span>Category</span>
+          <select name="category" required>
+            <option value="Mindfulness">Mindfulness</option>
+            <option value="Health">Health</option>
+            <option value="Focus">Focus</option>
+            <option value="Learning">Learning</option>
+            <option value="Home">Home</option>
+          </select>
+        </label>
+
+        <fieldset>
+          <legend>Icon</legend>
+          <div class="icon-picker">
+            <label><input type="radio" name="icon" value="self_improvement" checked /><span>self_improvement</span></label>
+            <label><input type="radio" name="icon" value="water_drop" /><span>water_drop</span></label>
+            <label><input type="radio" name="icon" value="menu_book" /><span>menu_book</span></label>
+            <label><input type="radio" name="icon" value="fitness_center" /><span>fitness_center</span></label>
+            <label><input type="radio" name="icon" value="bedtime" /><span>bedtime</span></label>
+          </div>
+        </fieldset>
+
+        <div class="dialog-actions">
+          <button class="secondary-action" type="button" data-close-dialog>Cancel</button>
+          <button class="primary-action" type="submit">
+            <span class="material-symbols-outlined" aria-hidden="true">check</span>
+            <span>Add Habit</span>
+          </button>
+        </div>
+      </form>
+    </dialog>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="script.js"></script>
+  </body>
+</html>
