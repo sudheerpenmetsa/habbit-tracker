@@ -47,7 +47,7 @@
   --primary-fixed-dim: #4de082;
   --primary: #006d36;
   --shadow: 0 18px 40px rgba(0, 61, 112, 0.08);
-  --radius: 12px;
+  --radius: 16px;
   --content-max: 1040px;
 }
 
@@ -108,8 +108,7 @@ button {
   gap: 8px;
   min-height: 72px;
   padding: calc(env(safe-area-inset-top) + 10px) 20px 10px;
-  background: rgba(248, 249, 255, 0.9);
-  border-bottom: 1px solid rgba(188, 202, 187, 0.55);
+  background: rgba(248, 249, 255, 0.82);
   backdrop-filter: blur(15px);
 }
 
@@ -125,10 +124,13 @@ button {
   letter-spacing: 0;
 }
 
-.top-app-bar h1 {
+.top-app-bar h1,
+.app-brand {
   color: var(--primary);
   font-size: 24px;
-  line-height: 30px;
+  line-height: 32px;
+  font-weight: 800;
+  white-space: nowrap;
 }
 
 .eyebrow,
@@ -187,6 +189,22 @@ button {
   margin-bottom: 16px;
 }
 
+.split-heading {
+  flex-direction: row;
+  align-items: flex-end;
+}
+
+.text-action {
+  min-height: 32px;
+  border: 0;
+  background: transparent;
+  color: var(--primary);
+  font-size: 11px;
+  line-height: 14px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
 .primary-action,
 .secondary-action {
   display: inline-flex;
@@ -214,7 +232,8 @@ button {
 }
 
 .hero-grid,
-.stats-grid {
+.stats-grid,
+.profile-stats-bento {
   display: grid;
   gap: 16px;
 }
@@ -230,6 +249,7 @@ button {
 .library-card,
 .stat-card,
 .profile-hero,
+.monthly-panel,
 .settings-list,
 .achievement-card {
   border: 1px solid var(--surface-container);
@@ -244,6 +264,12 @@ button {
   padding: 28px;
   text-align: center;
   box-shadow: var(--shadow);
+}
+
+.monthly-panel {
+  min-height: 216px;
+  margin-bottom: 0;
+  box-shadow: none;
 }
 
 .ring-wrap {
@@ -520,25 +546,90 @@ button {
 
 .profile-hero {
   display: grid;
-  grid-template-columns: 96px minmax(0, 1fr);
-  gap: 18px;
+  grid-template-columns: 1fr;
+  justify-items: center;
+  gap: 14px;
   align-items: center;
-  margin-bottom: 28px;
-  padding: 20px;
+  margin: 0 0 28px;
+  border: 0;
+  background: transparent;
+  padding: 0 8px;
+  text-align: center;
+}
+
+.profile-avatar-wrap {
+  position: relative;
+  width: 112px;
+  height: 112px;
 }
 
 .avatar {
+  position: relative;
   display: grid;
-  width: 96px;
-  height: 96px;
+  width: 112px;
+  height: 112px;
   place-items: center;
   border: 4px solid var(--surface-container-lowest);
   border-radius: 999px;
-  background: var(--primary-container);
+  background:
+    radial-gradient(circle at 50% 34%, #f9d1be 0 15%, transparent 16%),
+    radial-gradient(circle at 50% 32%, #233141 0 21%, transparent 22%),
+    linear-gradient(135deg, #e9f0ff 0%, #ffffff 48%, #d8e5e2 100%);
   box-shadow: var(--shadow);
-  color: var(--on-primary-container);
-  font-size: 28px;
+  color: transparent;
+  font-size: 0;
   font-weight: 800;
+}
+
+.avatar::before {
+  content: "";
+  width: 54px;
+  height: 62px;
+  border-radius: 44% 44% 38% 38%;
+  background: linear-gradient(#f7c7b3 0 48%, #f0b296 49% 100%);
+  box-shadow: 0 -24px 0 6px #202d3a;
+  transform: translateY(8px);
+}
+
+.avatar::after {
+  content: "";
+  position: absolute;
+  right: 23px;
+  top: 45px;
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: #0b1c30;
+  box-shadow: -24px 0 0 #0b1c30;
+}
+
+.avatar-edit {
+  position: absolute;
+  right: -2px;
+  bottom: 2px;
+  display: inline-flex;
+  width: 36px;
+  height: 36px;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--surface-container-lowest);
+  border-radius: 999px;
+  background: var(--primary);
+  color: var(--on-primary);
+  box-shadow: var(--shadow);
+}
+
+.avatar-edit .material-symbols-outlined {
+  font-size: 18px;
+}
+
+.profile-copy {
+  max-width: 360px;
+}
+
+.profile-copy h2 {
+  font-size: 26px;
+  line-height: 34px;
 }
 
 .profile-copy p {
@@ -553,6 +644,7 @@ button {
   flex-wrap: wrap;
   gap: 8px;
   margin-top: 12px;
+  justify-content: center;
 }
 
 .chip {
@@ -574,9 +666,34 @@ button {
   color: var(--on-primary-container);
 }
 
+.profile-stats-bento {
+  margin-bottom: 36px;
+}
+
+.profile-mini-stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.profile-stat-card {
+  min-height: 126px;
+  padding: 18px;
+}
+
+.profile-stat-card strong {
+  font-size: 22px;
+  line-height: 26px;
+}
+
+.profile-stat-card .label {
+  font-size: 10px;
+  line-height: 13px;
+}
+
 .achievement-section,
 .settings-section {
-  margin-top: 28px;
+  margin-top: 36px;
 }
 
 .achievement-grid {
@@ -909,12 +1026,30 @@ button {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 
+  .profile-stats-bento {
+    grid-template-columns: 1fr 1.35fr;
+  }
+
   .stat-card-large {
     grid-column: span 4;
   }
 
   .achievement-grid {
     grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .profile-hero {
+    grid-template-columns: 128px minmax(0, 1fr);
+    justify-items: start;
+    text-align: left;
+  }
+
+  .profile-copy {
+    max-width: 420px;
+  }
+
+  .chip-row {
+    justify-content: flex-start;
   }
 }
 
@@ -930,6 +1065,11 @@ button {
   .section-heading {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .section-heading.split-heading {
+    flex-direction: row;
+    align-items: flex-end;
   }
 
   .section-heading .primary-action {

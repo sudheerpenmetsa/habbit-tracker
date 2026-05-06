@@ -27,10 +27,7 @@
       <button class="icon-button" type="button" aria-label="Open habit library" data-nav-target="library">
         <span class="material-symbols-outlined" aria-hidden="true">menu</span>
       </button>
-      <div>
-        <p class="eyebrow">Mindful Momentum</p>
-        <h1 id="screen-title">Today</h1>
-      </div>
+      <h1 class="app-brand">Mindful Momentum</h1>
       <button class="icon-button" type="button" aria-label="Open notifications" data-open-notifications>
         <span class="material-symbols-outlined" aria-hidden="true">notifications</span>
       </button>
@@ -128,23 +125,66 @@
 
       <section class="screen" id="profile-screen" data-screen="profile" aria-labelledby="profile-heading">
         <section class="profile-hero">
-          <div class="avatar" aria-hidden="true">SR</div>
+          <div class="profile-avatar-wrap">
+            <div class="avatar" aria-hidden="true">SR</div>
+            <button class="avatar-edit" type="button" aria-label="Edit profile">
+              <span class="material-symbols-outlined" aria-hidden="true">edit</span>
+            </button>
+          </div>
           <div class="profile-copy">
             <h2 id="profile-heading">Sudheer's Momentum</h2>
-            <p>Building calm, repeatable progress one completed ritual at a time.</p>
+            <p>Building a morning ritual of clarity and consistent progress since June 2023.</p>
             <div class="chip-row">
-              <span class="chip primary-chip">Active Tracker</span>
+              <span class="chip primary-chip">Pro Member</span>
               <span class="chip" id="profile-streak-chip">Streak: 0 days</span>
             </div>
           </div>
         </section>
 
+        <section class="profile-stats-bento" aria-label="Profile progress summary">
+          <article class="progress-panel monthly-panel">
+            <p class="label">Monthly Progress</p>
+            <div class="ring-wrap" aria-live="polite">
+              <svg class="progress-ring" viewBox="0 0 132 132" role="img" aria-label="Monthly completion percentage">
+                <circle class="ring-track" cx="66" cy="66" r="58"></circle>
+                <circle class="ring-value" id="monthly-ring" cx="66" cy="66" r="58"></circle>
+              </svg>
+              <span class="ring-score" id="monthly-score">0%</span>
+            </div>
+            <p class="support-text" id="monthly-summary">Momentum is building this month.</p>
+          </article>
+
+          <div class="profile-mini-stats">
+            <article class="stat-card profile-stat-card">
+              <span class="material-symbols-outlined stat-icon secondary" aria-hidden="true">check_circle</span>
+              <strong id="profile-total">0</strong>
+              <span class="label">Habits Completed</span>
+            </article>
+            <article class="stat-card profile-stat-card">
+              <span class="material-symbols-outlined stat-icon primary" aria-hidden="true">timer</span>
+              <strong id="profile-focus">0h</strong>
+              <span class="label">Deep Focus Time</span>
+            </article>
+            <article class="stat-card profile-stat-card">
+              <span class="material-symbols-outlined stat-icon tertiary" aria-hidden="true">auto_awesome</span>
+              <strong id="profile-best">0</strong>
+              <span class="label">Streak Record</span>
+            </article>
+            <article class="stat-card profile-stat-card">
+              <span class="material-symbols-outlined stat-icon error" aria-hidden="true">favorite</span>
+              <strong id="profile-wellness">0%</strong>
+              <span class="label">Wellness Rating</span>
+            </article>
+          </div>
+        </section>
+
         <section class="achievement-section" aria-labelledby="achievements-heading">
-          <div class="section-heading compact">
+          <div class="section-heading compact split-heading">
             <div>
               <h2 id="achievements-heading">Achievements</h2>
-              <p class="support-text">Milestones from your habit history.</p>
+              <p class="support-text">Milestones on your journey of momentum.</p>
             </div>
+            <button class="text-action" type="button" data-nav-target="stats">View All</button>
           </div>
           <div class="achievement-grid" id="achievement-grid"></div>
         </section>
@@ -152,19 +192,34 @@
         <section class="settings-section" aria-labelledby="settings-heading">
           <h2 id="settings-heading">Settings</h2>
           <div class="settings-list">
+            <button class="settings-row" type="button">
+              <span class="material-symbols-outlined" aria-hidden="true">person</span>
+              <span>Account Information</span>
+              <span class="material-symbols-outlined row-end" aria-hidden="true">chevron_right</span>
+            </button>
+            <button class="settings-row" type="button" data-toggle-reminders>
+              <span class="material-symbols-outlined" aria-hidden="true">notifications_active</span>
+              <span>Push Notifications</span>
+              <span class="toggle" id="reminder-toggle" aria-hidden="true"><span></span></span>
+            </button>
+            <button class="settings-row" type="button">
+              <span class="material-symbols-outlined" aria-hidden="true">palette</span>
+              <span>Theme &amp; Appearance</span>
+              <span class="material-symbols-outlined row-end" aria-hidden="true">chevron_right</span>
+            </button>
+            <button class="settings-row" type="button">
+              <span class="material-symbols-outlined" aria-hidden="true">security</span>
+              <span>Privacy &amp; Security</span>
+              <span class="material-symbols-outlined row-end" aria-hidden="true">chevron_right</span>
+            </button>
             <button class="settings-row" type="button" data-export>
               <span class="material-symbols-outlined" aria-hidden="true">download</span>
               <span>Export Data</span>
               <span class="material-symbols-outlined row-end" aria-hidden="true">chevron_right</span>
             </button>
-            <button class="settings-row" type="button" data-toggle-reminders>
-              <span class="material-symbols-outlined" aria-hidden="true">notifications_active</span>
-              <span>Daily Reminder</span>
-              <span class="toggle" id="reminder-toggle" aria-hidden="true"><span></span></span>
-            </button>
-            <button class="settings-row danger" type="button" data-reset-demo>
-              <span class="material-symbols-outlined" aria-hidden="true">restart_alt</span>
-              <span>Reset Demo Data</span>
+            <button class="settings-row danger" type="button" data-sign-out>
+              <span class="material-symbols-outlined" aria-hidden="true">logout</span>
+              <span>Sign Out</span>
             </button>
           </div>
         </section>

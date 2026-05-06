@@ -42,13 +42,15 @@ const state = loadState();
 const elements = {
   screens: document.querySelectorAll(".screen"),
   navItems: document.querySelectorAll("[data-nav-target]"),
-  title: document.querySelector("#screen-title"),
   todayDate: document.querySelector("#today-date"),
   todayHabits: document.querySelector("#today-habits"),
   libraryHabits: document.querySelector("#library-habits"),
   todayRing: document.querySelector("#today-ring"),
+  monthlyRing: document.querySelector("#monthly-ring"),
   todayScore: document.querySelector("#today-score"),
+  monthlyScore: document.querySelector("#monthly-score"),
   todaySummary: document.querySelector("#today-summary"),
+  monthlySummary: document.querySelector("#monthly-summary"),
   nextHabitTitle: document.querySelector("#next-habit-title"),
   nextHabitMeta: document.querySelector("#next-habit-meta"),
   weekChart: document.querySelector("#week-chart"),
@@ -56,6 +58,10 @@ const elements = {
   bestStreak: document.querySelector("#best-streak"),
   achievementCount: document.querySelector("#achievement-count"),
   wellnessScore: document.querySelector("#wellness-score"),
+  profileTotal: document.querySelector("#profile-total"),
+  profileFocus: document.querySelector("#profile-focus"),
+  profileBest: document.querySelector("#profile-best"),
+  profileWellness: document.querySelector("#profile-wellness"),
   achievementGrid: document.querySelector("#achievement-grid"),
   profileStreakChip: document.querySelector("#profile-streak-chip"),
   dialog: document.querySelector("#habit-dialog"),
@@ -106,13 +112,8 @@ function wireEvents() {
     showToast(state.remindersEnabled ? "Daily reminder enabled." : "Daily reminder disabled.");
   });
 
-  document.querySelector("[data-reset-demo]").addEventListener("click", () => {
-    localStorage.removeItem(STORAGE_KEY);
-    Object.assign(state, loadState());
-    seedCompletionHistory(true);
-    saveState();
-    render();
-    showToast("Demo data reset.");
+  document.querySelector("[data-sign-out]").addEventListener("click", () => {
+    showToast("This local tracker does not use an account yet.");
   });
 
   document.querySelector("[data-export]").addEventListener("click", exportData);
@@ -131,13 +132,6 @@ function setScreen(screenName) {
     item.classList.toggle("is-active", item.dataset.navTarget === screenName);
   });
 
-  const titles = {
-    today: "Today",
-    library: "Library",
-    stats: "Stats",
-    profile: "Profile"
-  };
-  elements.title.textContent = titles[screenName] || "Today";
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
@@ -200,7 +194,7 @@ function render() {
     day: "numeric"
   });
 
-  updateProgressRing(percent);
+  updateProgressRing(elements.todayRing, elements.todayScore, percent);
   elements.todaySummary.textContent = getTodaySummary(completedToday, state.habits.length);
   renderTodayHabits(todayKey);
   renderLibrary(todayKey);
@@ -294,12 +288,20 @@ function renderStats() {
   const week = lastSevenDays().map((day) => completionPercentForDay(dateKey(day)));
   const wellness = week.length ? Math.round(week.reduce((sum, value) => sum + value, 0) / week.length) : 0;
   const achievements = getAchievements().filter((achievement) => achievement.unlocked).length;
+  const monthly = monthlyCompletionPercent();
+  const focusHours = focusTimeHours();
 
   elements.completedTotal.textContent = allCompleted.toString();
   elements.bestStreak.textContent = best.toString();
   elements.achievementCount.textContent = achievements.toString();
   elements.wellnessScore.textContent = `${wellness}%`;
   elements.profileStreakChip.textContent = `Streak: ${best} days`;
+  elements.profileTotal.textContent = allCompleted.toString();
+  elements.profileFocus.textContent = `${focusHours}h`;
+  elements.profileBest.textContent = best.toString();
+  elements.profileWellness.textContent = `${wellness}%`;
+  updateProgressRing(elements.monthlyRing, elements.monthlyScore, monthly);
+  elements.monthlySummary.textContent = monthly >= 70 ? "Momentum is high this month" : "Momentum is building this month";
 
   elements.weekChart.innerHTML = lastSevenDays()
     .map((day) => {
@@ -332,10 +334,10 @@ function renderAchievements() {
     .join("");
 }
 
-function updateProgressRing(percent) {
+function updateProgressRing(ring, score, percent) {
   const offset = CIRCLE_LENGTH - (percent / 100) * CIRCLE_LENGTH;
-  elements.todayRing.style.strokeDashoffset = offset.toString();
-  elements.todayScore.textContent = `${percent}%`;
+  ring.style.strokeDashoffset = offset.toString();
+  score.textContent = `${percent}%`;
 }
 
 function getTodaySummary(completed, total) {
@@ -383,6 +385,34 @@ function completionPercentForDay(key) {
   if (!state.habits.length) return 0;
   const completed = state.habits.filter((habit) => habit.completions[key]).length;
   return Math.round((completed / state.habits.length) * 100);
+}
+
+function monthlyCompletionPercent() {
+  if (!state.habits.length) return 0;
+
+  const today = new Date();
+  const monthStart = new Date(today.getFullYear(), today.getMonth(), 1, 12);
+  const daysElapsed = Math.max(1, Math.floor((today - monthStart) / DAY_MS) + 1);
+  let possible = 0;
+  let completed = 0;
+
+  state.habits.forEach((habit) => {
+    for (let offset = 0; offset < daysElapsed; offset += 1) {
+      const day = addDays(monthStart, offset);
+      if (dateKey(day) >= habit.createdAt) {
+        possible += 1;
+        if (habit.completions[dateKey(day)]) completed += 1;
+      }
+    }
+  });
+
+  return possible ? Math.round((completed / possible) * 100) : 0;
+}
+
+function focusTimeHours() {
+  const focusHabit = state.habits.find((habit) => habit.category === "Focus" || habit.icon === "timer");
+  const focusCompletions = focusHabit ? totalCompletions(focusHabit) : 0;
+  return (focusCompletions * 1.25).toFixed(1).replace(".0", "");
 }
 
 function totalCompletions(habit) {
@@ -435,7 +465,7 @@ function seedCompletionHistory(force = false) {
   state.habits.forEach((habit, habitIndex) => {
     habit.completions = {};
     for (let offset = -12; offset <= -1; offset += 1) {
-      const shouldComplete = (Math.abs(offset) + habitIndex) % (habitIndex + 3) !== 0;
+      const shouldComplete = habitIndex === 0 || (Math.abs(offset) + habitIndex) % (habitIndex + 3) !== 0;
       if (shouldComplete) {
         habit.completions[dateKey(addDays(new Date(), offset))] = true;
       }
