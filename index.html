@@ -35,91 +35,339 @@
 
     <main class="app-shell">
       <section class="screen is-active" id="today-screen" data-screen="today" aria-labelledby="today-heading">
-        <div class="section-heading">
+        <section class="today-focus-section" aria-label="Daily progress summary">
           <div>
-            <p class="eyebrow" id="today-date"></p>
-            <h2 id="today-heading">Daily Rituals</h2>
-          </div>
-          <button class="primary-action" type="button" data-open-add>
-            <span class="material-symbols-outlined" aria-hidden="true">add</span>
-            <span>Habit</span>
-          </button>
-        </div>
-
-        <section class="hero-grid" aria-label="Daily progress summary">
-          <article class="progress-panel">
-            <p class="label">Today's Momentum</p>
-            <div class="ring-wrap" aria-live="polite">
-              <svg class="progress-ring" viewBox="0 0 132 132" role="img" aria-label="Today's completion percentage">
-                <circle class="ring-track" cx="66" cy="66" r="58"></circle>
-                <circle class="ring-value" id="today-ring" cx="66" cy="66" r="58"></circle>
-              </svg>
-              <span class="ring-score" id="today-score">0%</span>
-            </div>
+            <p class="eyebrow" id="today-date">Today's Focus</p>
+            <h2 id="today-heading">Keep the flow.</h2>
             <p class="support-text" id="today-summary">Complete one ritual to start today's momentum.</p>
-          </article>
-
-          <article class="focus-card">
-            <div class="focus-icon">
-              <span class="material-symbols-outlined" aria-hidden="true">wb_twilight</span>
-            </div>
-            <div>
-              <p class="label">Next Focus</p>
-              <h3 id="next-habit-title">No habit due</h3>
-              <p id="next-habit-meta">All rituals are complete for today.</p>
-            </div>
-          </article>
+          </div>
+          <div class="focus-ring" aria-live="polite">
+            <svg viewBox="0 0 96 96" role="img" aria-label="Today's completion percentage">
+              <circle class="ring-track" cx="48" cy="48" r="40"></circle>
+              <circle class="ring-value" id="today-ring" cx="48" cy="48" r="40"></circle>
+            </svg>
+            <span id="today-score">0%</span>
+          </div>
         </section>
 
-        <section class="habit-list" id="today-habits" aria-label="Today's habits"></section>
+        <section class="monthly-goal-card" aria-label="Monthly goal overview">
+          <div class="monthly-goal-heading">
+            <div class="inline-heading">
+              <span class="material-symbols-outlined" aria-hidden="true">calendar_month</span>
+              <h3>Monthly Goal</h3>
+            </div>
+            <span class="label" id="monthly-goal-label">May 2026</span>
+          </div>
+          <div class="monthly-goal-body">
+            <div class="goal-ring">
+              <svg viewBox="0 0 128 128" aria-label="Monthly goal progress">
+                <circle class="ring-track" cx="64" cy="64" r="56"></circle>
+                <circle class="ring-value static-goal-ring" cx="64" cy="64" r="56"></circle>
+              </svg>
+              <div>
+                <strong id="goal-progress-score">68%</strong>
+                <span>Progress</span>
+              </div>
+            </div>
+            <div class="goal-breakdown">
+              <h3>Overall Progress</h3>
+              <p id="goal-progress-copy">You've stayed consistent this month. Keep maintaining your momentum.</p>
+              <div class="goal-category">
+                <div><span>Health</span><strong>80%</strong></div>
+                <div class="progress-track compact"><span style="width: 80%"></span></div>
+              </div>
+              <div class="goal-category">
+                <div><span>Reading</span><strong class="secondary-text">50%</strong></div>
+                <div class="progress-track compact"><span class="secondary" style="width: 50%"></span></div>
+              </div>
+              <div class="goal-category">
+                <div><span>Mindful Avoidance</span><strong class="tertiary-text">75%</strong></div>
+                <div class="progress-track compact"><span class="tertiary-fill" style="width: 75%"></span></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="monthly-milestones-card" aria-label="Monthly milestones">
+          <div class="monthly-goal-heading">
+            <div class="inline-heading">
+              <span class="material-symbols-outlined secondary-text" aria-hidden="true">workspace_premium</span>
+              <h3>Monthly Milestones</h3>
+            </div>
+            <span class="label">Achievements</span>
+          </div>
+          <div class="milestone-row">
+            <article>
+              <span class="material-symbols-outlined" aria-hidden="true">local_fire_department</span>
+              <p>15 Day<br />Meditation Streak</p>
+            </article>
+            <article>
+              <span class="material-symbols-outlined secondary-text" aria-hidden="true">auto_stories</span>
+              <p>Finished<br />2 Books</p>
+            </article>
+            <article>
+              <span class="material-symbols-outlined tertiary-text" aria-hidden="true">directions_run</span>
+              <p>50km<br />Walked</p>
+            </article>
+          </div>
+          <button class="whatsapp-share" type="button">
+            <span class="material-symbols-outlined" aria-hidden="true">ios_share</span>
+            <span>Share via WhatsApp</span>
+          </button>
+          <div class="upcoming-milestones">
+            <p class="label">Upcoming Milestones</p>
+            <article>
+              <span class="material-symbols-outlined" aria-hidden="true">schedule</span>
+              <div>
+                <strong>20 Day Mindfulness Streak</strong>
+                <span>5 days to go</span>
+              </div>
+              <div class="mini-progress"><span style="width: 75%"></span></div>
+            </article>
+            <article>
+              <span class="material-symbols-outlined" aria-hidden="true">library_books</span>
+              <div>
+                <strong>Complete 3rd Book</strong>
+                <span>85% progress</span>
+              </div>
+              <div class="mini-progress"><span class="secondary" style="width: 85%"></span></div>
+            </article>
+          </div>
+        </section>
+
+        <section class="today-bento" id="today-habits" aria-label="Today's habits"></section>
+
+        <section class="daily-insight" aria-label="Daily insight">
+          <div class="daily-insight-image" aria-hidden="true"></div>
+          <div class="daily-insight-copy">
+            <p class="label">Daily Insight</p>
+            <p>"Momentum is built in the quiet spaces between actions."</p>
+          </div>
+        </section>
       </section>
 
       <section class="screen" id="library-screen" data-screen="library" aria-labelledby="library-heading">
-        <div class="section-heading">
-          <div>
-            <p class="eyebrow">Library</p>
-            <h2 id="library-heading">Habit Collection</h2>
-          </div>
-          <button class="primary-action" type="button" data-open-add>
-            <span class="material-symbols-outlined" aria-hidden="true">add</span>
-            <span>Habit</span>
-          </button>
+        <div class="library-segmented" role="tablist" aria-label="Library sections">
+          <button class="is-active" type="button" role="tab" aria-selected="true" data-library-panel="habits">Habits</button>
+          <button type="button" role="tab" aria-selected="false" data-library-panel="books">Books</button>
         </div>
-        <div class="library-grid" id="library-habits" aria-label="Saved habits"></div>
+
+        <div class="library-panel is-active" id="habit-library-panel">
+        <section class="habit-library-hero">
+          <div>
+            <h2 id="library-heading">Habit Library</h2>
+            <p>Explore curated paths to growth</p>
+          </div>
+          <label class="habit-library-search">
+            <span class="material-symbols-outlined" aria-hidden="true">search</span>
+            <input id="habit-library-search" type="search" placeholder="Find a habit or category..." autocomplete="off" />
+          </label>
+        </section>
+
+        <section class="habit-categories-section" aria-label="Habit categories">
+          <div class="library-section-heading">
+            <h3>Categories</h3>
+            <button type="button">View All</button>
+          </div>
+          <div class="habit-bento-grid">
+            <article class="habit-category-card health">
+              <div>
+                <span class="material-symbols-outlined" aria-hidden="true">favorite</span>
+                <h3>Health</h3>
+                <p>Vibrancy starts here.</p>
+              </div>
+              <span>12 Habits</span>
+            </article>
+            <article class="habit-category-card focus">
+              <div>
+                <span class="material-symbols-outlined" aria-hidden="true">bolt</span>
+                <h3>Focus</h3>
+              </div>
+              <span>8 Pathways</span>
+            </article>
+            <article class="habit-category-card zen">
+              <div>
+                <span class="material-symbols-outlined" aria-hidden="true">self_improvement</span>
+                <h3>Zen</h3>
+              </div>
+              <span>15 Rituals</span>
+            </article>
+          </div>
+        </section>
+
+        <section class="custom-habit-card" aria-label="Build a custom habit">
+          <div class="custom-habit-heading">
+            <div>
+              <span class="material-symbols-outlined" aria-hidden="true">add_circle</span>
+            </div>
+            <div>
+              <h3>Build Custom</h3>
+              <p>Design a unique ritual just for you</p>
+            </div>
+          </div>
+          <form id="custom-habit-form" class="custom-habit-form">
+            <label>
+              <span>Habit Name</span>
+              <input name="name" type="text" placeholder="e.g. Morning Reflection" maxlength="36" required />
+            </label>
+            <div class="custom-habit-fields">
+              <label>
+                <span>Frequency</span>
+                <select name="frequency">
+                  <option>Daily</option>
+                  <option>Weekly</option>
+                  <option>Custom</option>
+                </select>
+              </label>
+              <label>
+                <span>Time of Day</span>
+                <select name="time">
+                  <option>Anytime</option>
+                  <option>Morning</option>
+                  <option>Evening</option>
+                </select>
+              </label>
+            </div>
+            <div class="smart-notification-panel">
+              <div>
+                <span class="material-symbols-outlined" aria-hidden="true">notifications_active</span>
+                <strong>Smart Notifications</strong>
+                <span class="toggle is-on" aria-hidden="true"><span></span></span>
+              </div>
+              <p>Gentle nudges that adapt to your schedule. No anxiety, just quiet reminders.</p>
+            </div>
+            <button class="primary-action wide-action" type="submit">Create Habit</button>
+          </form>
+        </section>
+
+        <section class="recommended-habits-section" aria-label="Recommended habits">
+          <h3>Recommended for you</h3>
+          <div class="recommended-list">
+            <button type="button" data-recommend-habit="Hydrate Hourly" data-recommend-category="Health" data-recommend-icon="water_drop">
+              <span class="material-symbols-outlined" aria-hidden="true">water_drop</span>
+              <span><strong>Hydrate Hourly</strong><small>Boost energy and focus</small></span>
+              <span class="material-symbols-outlined" aria-hidden="true">chevron_right</span>
+            </button>
+            <button type="button" data-recommend-habit="Read 10 Pages" data-recommend-category="Learning" data-recommend-icon="menu_book">
+              <span class="material-symbols-outlined" aria-hidden="true">menu_book</span>
+              <span><strong>Read 10 Pages</strong><small>Sharpen the mind daily</small></span>
+              <span class="material-symbols-outlined" aria-hidden="true">chevron_right</span>
+            </button>
+          </div>
+        </section>
+        </div>
+
+        <div class="library-panel" id="book-library-panel">
+        <section class="books-catalogue-section" aria-label="Books catalogue">
+          <div class="library-section-heading">
+            <h3>Books Catalogue</h3>
+            <button type="button" data-book-filter="all">View All</button>
+          </div>
+        </section>
+        <form class="book-form" id="book-form" aria-label="Add a book">
+          <input name="title" type="text" placeholder="Book title" required />
+          <input name="author" type="text" placeholder="Author" required />
+          <select name="category">
+            <option>Non-fiction</option>
+            <option>Fiction</option>
+            <option>Productivity</option>
+            <option>Psychology</option>
+            <option>Health</option>
+            <option>Mindfulness</option>
+          </select>
+          <select name="status">
+            <option value="backlogged">Backlogged</option>
+            <option value="in-progress">In Progress</option>
+            <option value="completed">Completed</option>
+            <option value="paused">Paused</option>
+          </select>
+          <button class="primary-action" type="submit">Add Book</button>
+        </form>
+        <section class="book-search-section" aria-label="Book search and filters">
+          <label class="book-search">
+            <span class="material-symbols-outlined" aria-hidden="true">search</span>
+            <input id="book-search" type="search" placeholder="Find your next read..." autocomplete="off" />
+          </label>
+          <div class="filter-chips" role="list" aria-label="Book filters">
+            <button class="is-active" type="button" data-book-filter="all">All Books</button>
+            <button type="button" data-book-filter="backlogged">Backlogged</button>
+            <button type="button" data-book-filter="in-progress">In Progress</button>
+            <button type="button" data-book-filter="completed">Completed</button>
+            <button type="button" data-book-filter="paused">Paused</button>
+            <button type="button" data-book-filter="fiction">Fiction</button>
+            <button type="button" data-book-filter="non-fiction">Non-fiction</button>
+          </div>
+        </section>
+        <section class="book-stats-strip" aria-label="Book summary">
+          <article><strong id="book-total-count">0</strong><span>Books</span></article>
+          <article><strong id="book-reading-count">0</strong><span>Reading</span></article>
+          <article><strong id="book-backlog-count">0</strong><span>Backlog</span></article>
+          <article><strong id="book-done-count">0</strong><span>Done</span></article>
+        </section>
+        <section class="book-grid" id="library-habits" aria-label="Book catalogue"></section>
+        </div>
       </section>
 
       <section class="screen" id="stats-screen" data-screen="stats" aria-labelledby="stats-heading">
-        <div class="section-heading">
-          <div>
-            <p class="eyebrow">Stats</p>
-            <h2 id="stats-heading">Momentum Report</h2>
-          </div>
-        </div>
-        <section class="stats-grid" aria-label="Habit statistics">
-          <article class="stat-card stat-card-large">
-            <p class="label">Weekly Progress</p>
-            <div class="week-chart" id="week-chart"></div>
+        <section class="stats-top-row" aria-label="Avoidance summary">
+          <article>
+            <span class="label">Current Streak</span>
+            <div><strong id="avoidance-current">0</strong><span>days</span></div>
           </article>
-          <article class="stat-card">
-            <span class="material-symbols-outlined stat-icon secondary" aria-hidden="true">check_circle</span>
-            <strong id="completed-total">0</strong>
-            <span class="label">Habits Completed</span>
-          </article>
-          <article class="stat-card">
-            <span class="material-symbols-outlined stat-icon primary" aria-hidden="true">local_fire_department</span>
-            <strong id="best-streak">0</strong>
+          <article>
             <span class="label">Best Streak</span>
+            <div><strong id="avoidance-best">0</strong><span>days</span></div>
           </article>
-          <article class="stat-card">
-            <span class="material-symbols-outlined stat-icon tertiary" aria-hidden="true">auto_awesome</span>
-            <strong id="achievement-count">0</strong>
-            <span class="label">Achievements</span>
+          <article class="highlight">
+            <span class="label">Total Avoided</span>
+            <div><strong id="avoidance-total">0</strong><span>days</span></div>
           </article>
-          <article class="stat-card">
-            <span class="material-symbols-outlined stat-icon error" aria-hidden="true">favorite</span>
-            <strong id="wellness-score">0%</strong>
-            <span class="label">Wellness Rating</span>
-          </article>
+        </section>
+
+        <section class="avoidance-progress-card" aria-label="Monthly avoidance progress">
+          <div>
+            <h2 id="stats-heading">Monthly Progress</h2>
+            <p id="avoidance-progress-copy">Log avoidance to start this month's progress.</p>
+            <div class="chip-row stat-chip-row">
+              <span class="chip" id="avoidance-month-chip">May 2026</span>
+              <span class="chip primary-chip">Health</span>
+            </div>
+          </div>
+          <div class="mini-ring">
+            <svg viewBox="0 0 96 96" aria-label="Avoidance days this month">
+              <circle class="ring-track" cx="48" cy="48" r="40"></circle>
+              <circle class="ring-value" id="avoidance-ring" cx="48" cy="48" r="40"></circle>
+            </svg>
+            <div><strong id="avoidance-days">0</strong><span id="avoidance-month-total">/31</span></div>
+          </div>
+        </section>
+
+        <section class="calendar-section" aria-label="Avoidance calendar">
+          <div class="calendar-heading">
+            <h3 id="calendar-title">May 2026</h3>
+            <div>
+              <button type="button" aria-label="Previous month"><span class="material-symbols-outlined" aria-hidden="true">chevron_left</span></button>
+              <button type="button" aria-label="Next month"><span class="material-symbols-outlined" aria-hidden="true">chevron_right</span></button>
+            </div>
+          </div>
+          <div class="calendar-card">
+            <div class="calendar-weekdays"><span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span></div>
+            <div class="calendar-grid" id="avoidance-calendar"></div>
+          </div>
+        </section>
+
+        <section class="recent-activity-section" aria-label="Recent activity">
+          <h3>Recent Activity</h3>
+          <div class="activity-list" id="recent-activity"></div>
+          <button class="text-action full-width-action" type="button">View Full History</button>
+        </section>
+
+        <section class="mindful-insight-card" aria-label="Mindful insight">
+          <div>
+            <h3>Mindful Insight</h3>
+            <p>You are most successful on Thursdays. Keep that momentum!</p>
+          </div>
+          <div class="insight-shapes" aria-hidden="true"></div>
         </section>
       </section>
 
@@ -226,6 +474,13 @@
       </section>
     </main>
 
+    <div class="quick-log-fab">
+      <button type="button" data-open-add>
+        <span class="material-symbols-outlined" aria-hidden="true">add</span>
+        <span>Quick Log</span>
+      </button>
+    </div>
+
     <nav class="bottom-nav" aria-label="Primary">
       <button class="nav-item is-active" type="button" data-nav-target="today">
         <span class="material-symbols-outlined" aria-hidden="true">calendar_today</span>
@@ -292,6 +547,25 @@
           </button>
         </div>
       </form>
+    </dialog>
+
+    <dialog class="book-dialog" id="book-dialog">
+      <div class="book-detail-card">
+        <button class="icon-button book-detail-close" type="button" aria-label="Close book detail" data-close-book>
+          <span class="material-symbols-outlined" aria-hidden="true">close</span>
+        </button>
+        <div class="book-detail-cover" id="book-detail-cover"></div>
+        <div class="book-detail-copy">
+          <span class="book-tag" id="book-detail-category">Book</span>
+          <h2 id="book-detail-title">Book title</h2>
+          <p id="book-detail-author">Author</p>
+          <div class="book-detail-progress" id="book-detail-progress"></div>
+          <div class="book-detail-actions">
+            <button type="button">Update Progress</button>
+            <button type="button">Mark Complete</button>
+          </div>
+        </div>
+      </div>
     </dialog>
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
