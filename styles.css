@@ -165,22 +165,17 @@ button {
 .app-shell {
   width: min(100%, var(--content-max));
   margin: 0 auto;
-  padding: calc(190px + env(safe-area-inset-top)) 20px calc(108px + env(safe-area-inset-bottom));
-}
-
-body.is-signed-in .app-shell {
-  padding-top: calc(112px + env(safe-area-inset-top));
+  padding: 20px 20px calc(108px + env(safe-area-inset-bottom));
 }
 
 .sync-panel {
-  position: fixed;
-  top: calc(72px + env(safe-area-inset-top));
-  right: 14px;
-  left: 14px;
-  z-index: 19;
+  position: relative;
+  z-index: 10;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: 10px;
+  width: min(calc(100% - 28px), var(--content-max));
+  margin: calc(84px + env(safe-area-inset-top)) auto 0;
   border: 1px solid var(--surface-container);
   border-radius: 16px;
   background: rgba(255, 255, 255, 0.92);
@@ -208,7 +203,7 @@ body.is-signed-in .app-shell {
 
 .sync-panel form {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr);
   gap: 8px;
 }
 
@@ -237,9 +232,6 @@ body.is-signed-in .app-shell {
 }
 
 body.is-signed-in .sync-panel {
-  right: 20px;
-  left: auto;
-  width: min(260px, calc(100vw - 40px));
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
   gap: 8px;
@@ -760,11 +752,11 @@ body.is-signed-in .sync-sign-out {
 
 .quick-log-fab {
   position: fixed;
-  left: 50%;
+  right: 20px;
   bottom: calc(84px + env(safe-area-inset-bottom));
   z-index: 30;
   display: none;
-  transform: translateX(-50%);
+  transform: none;
 }
 
 body[data-screen="today"] .quick-log-fab {
@@ -773,6 +765,7 @@ body[data-screen="today"] .quick-log-fab {
 
 .quick-log-fab button {
   display: inline-flex;
+  width: 56px;
   min-height: 56px;
   align-items: center;
   justify-content: center;
@@ -782,8 +775,12 @@ body[data-screen="today"] .quick-log-fab {
   background: linear-gradient(90deg, var(--primary), var(--secondary));
   box-shadow: 0 10px 20px rgba(0, 109, 54, 0.18);
   color: var(--on-primary);
-  padding: 0 28px;
+  padding: 0;
   font-weight: 800;
+}
+
+.quick-log-fab button span:last-child {
+  display: none;
 }
 
 .monthly-goal-card,
@@ -841,6 +838,7 @@ body[data-screen="today"] .quick-log-fab {
 
 .monthly-goal-body {
   align-items: flex-start;
+  flex-direction: column;
   gap: 24px;
 }
 
@@ -850,6 +848,7 @@ body[data-screen="today"] .quick-log-fab {
   width: 128px;
   height: 128px;
   flex: 0 0 auto;
+  align-self: center;
   place-items: center;
 }
 
@@ -862,11 +861,6 @@ body[data-screen="today"] .quick-log-fab {
 .goal-ring .ring-value {
   fill: none;
   stroke-width: 10;
-}
-
-.goal-ring .static-goal-ring {
-  stroke-dasharray: 351.86;
-  stroke-dashoffset: 112.6;
 }
 
 .goal-ring > div {
@@ -907,6 +901,23 @@ body[data-screen="today"] .quick-log-fab {
 .goal-category {
   display: grid;
   gap: 6px;
+}
+
+.goal-category-list,
+#upcoming-milestone-list {
+  display: grid;
+  gap: 10px;
+}
+
+.empty-monthly {
+  margin: 0;
+  border: 1px dashed var(--surface-container-high);
+  border-radius: 12px;
+  background: var(--surface-container-low);
+  color: var(--on-surface-variant);
+  padding: 12px;
+  font-size: 13px;
+  line-height: 18px;
 }
 
 .goal-category span,
@@ -972,6 +983,15 @@ body[data-screen="today"] .quick-log-fab {
   line-height: 14px;
   font-weight: 800;
   text-transform: uppercase;
+}
+
+.milestone-row .empty-monthly {
+  min-width: 100%;
+  color: var(--on-surface-variant);
+  font-size: 13px;
+  line-height: 18px;
+  text-align: left;
+  text-transform: none;
 }
 
 .whatsapp-share {
@@ -2768,6 +2788,25 @@ body[data-screen="today"] .quick-log-fab {
     padding-inline: 32px;
   }
 
+  .sync-panel form {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .quick-log-fab {
+    right: auto;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .quick-log-fab button {
+    width: auto;
+    padding: 0 28px;
+  }
+
+  .quick-log-fab button span:last-child {
+    display: inline-flex;
+  }
+
   .hero-grid {
     grid-template-columns: 0.85fr 1.15fr;
     align-items: stretch;
@@ -2835,6 +2874,16 @@ body[data-screen="today"] .quick-log-fab {
   }
 }
 
+@media (min-width: 900px) {
+  .monthly-goal-body {
+    flex-direction: row;
+  }
+
+  .goal-ring {
+    align-self: flex-start;
+  }
+}
+
 @media (max-width: 430px) {
   .top-app-bar {
     padding-inline: 14px;
@@ -2842,6 +2891,21 @@ body[data-screen="today"] .quick-log-fab {
 
   .app-shell {
     padding-inline: 14px;
+  }
+
+  .quick-log-fab {
+    right: 20px;
+    left: auto;
+    transform: none;
+  }
+
+  .quick-log-fab button {
+    width: 56px;
+    padding: 0;
+  }
+
+  .quick-log-fab button span:last-child {
+    display: none;
   }
 
   .section-heading {

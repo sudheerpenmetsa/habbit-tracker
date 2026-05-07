@@ -61,8 +61,13 @@ const elements = {
   todayScore: document.querySelector("#today-score"),
   monthlyScore: document.querySelector("#monthly-score"),
   todaySummary: document.querySelector("#today-summary"),
+  monthlyGoalLabel: document.querySelector("#monthly-goal-label"),
+  goalProgressRing: document.querySelector("#goal-progress-ring"),
   goalProgressScore: document.querySelector("#goal-progress-score"),
   goalProgressCopy: document.querySelector("#goal-progress-copy"),
+  goalCategoryList: document.querySelector("#goal-category-list"),
+  monthlyMilestoneRow: document.querySelector("#monthly-milestone-row"),
+  upcomingMilestoneList: document.querySelector("#upcoming-milestone-list"),
   monthlySummary: document.querySelector("#monthly-summary"),
   customHabitForm: document.querySelector("#custom-habit-form"),
   bookForm: document.querySelector("#book-form"),
@@ -476,13 +481,87 @@ function render() {
   elements.todaySummary.textContent = state.habits.length
     ? `Today's focus is ${todayFocusPercent}% complete.`
     : getTodaySummary(completedToday, state.habits.length);
-  elements.goalProgressScore.textContent = `${monthlyCompletionPercent()}%`;
-  elements.goalProgressCopy.textContent = `You've stayed consistent for ${completedThisMonth()} habit logs this month. Keep maintaining your momentum.`;
+  renderMonthlyGoal(today);
   renderTodayHabits(todayKey);
   renderBookLibrary();
   renderStats();
   renderAchievements();
   elements.reminderToggle.classList.toggle("is-on", state.remindersEnabled);
+}
+
+function renderMonthlyGoal(today = new Date()) {
+  const monthlyPercent = monthlyCompletionPercent();
+  const completedLogs = completedThisMonth();
+
+  elements.monthlyGoalLabel.textContent = today.toLocaleDateString(undefined, { month: "long", year: "numeric" });
+  updateProgressRing(elements.goalProgressRing, elements.goalProgressScore, monthlyPercent);
+  elements.goalProgressCopy.textContent = completedLogs
+    ? `You've logged ${completedLogs} habit completion${completedLogs === 1 ? "" : "s"} this month.`
+    : "No habit progress logged this month yet.";
+  renderMonthlyCategories();
+  renderMonthlyMilestones();
+}
+
+function renderMonthlyCategories() {
+  const categories = monthlyCategoryProgress();
+
+  if (!categories.length) {
+    elements.goalCategoryList.innerHTML = `<p class="empty-monthly">Complete habits this month to see category progress.</p>`;
+    return;
+  }
+
+  elements.goalCategoryList.innerHTML = categories
+    .map((category, index) => {
+      const fillClass = index % 3 === 1 ? "secondary" : index % 3 === 2 ? "tertiary-fill" : "";
+      const textClass = index % 3 === 1 ? "secondary-text" : index % 3 === 2 ? "tertiary-text" : "";
+      return `
+        <div class="goal-category">
+          <div><span>${escapeHtml(category.name)}</span><strong class="${textClass}">${category.percent}%</strong></div>
+          <div class="progress-track compact"><span class="${fillClass}" style="width: ${category.percent}%"></span></div>
+        </div>
+      `;
+    })
+    .join("");
+}
+
+function renderMonthlyMilestones() {
+  const achievements = getAchievements();
+  const unlocked = achievements.filter((achievement) => achievement.unlocked);
+  const upcoming = achievements
+    .filter((achievement) => !achievement.unlocked)
+    .sort((first, second) => second.progress - first.progress)
+    .slice(0, 2);
+
+  elements.monthlyMilestoneRow.innerHTML = unlocked.length
+    ? unlocked
+        .map((achievement) => {
+          return `
+            <article>
+              <span class="material-symbols-outlined" aria-hidden="true">${achievement.icon}</span>
+              <p>${escapeHtml(achievement.title)}</p>
+            </article>
+          `;
+        })
+        .join("")
+    : `<p class="empty-monthly">No milestones unlocked yet.</p>`;
+
+  elements.upcomingMilestoneList.innerHTML = upcoming.length
+    ? upcoming
+        .map((achievement, index) => {
+          const fillClass = index === 1 ? "secondary" : "";
+          return `
+            <article>
+              <span class="material-symbols-outlined" aria-hidden="true">${achievement.icon}</span>
+              <div>
+                <strong>${escapeHtml(achievement.title)}</strong>
+                <span>${escapeHtml(achievement.progressText)}</span>
+              </div>
+              <div class="mini-progress"><span class="${fillClass}" style="width: ${achievement.progress}%"></span></div>
+            </article>
+          `;
+        })
+        .join("")
+    : `<p class="empty-monthly">All milestones are unlocked.</p>`;
 }
 
 function renderTodayHabits(todayKey) {
@@ -568,6 +647,8 @@ function renderSmallTodayCard(habit, todayKey, index) {
 }
 
 function renderAvoidanceCard() {
+  const avoidanceStreak = currentAvoidanceStreak();
+  const avoidanceStreakLabel = avoidanceStreak ? `${avoidanceStreak}-Day Streak` : "No Streak Yet";
   const foodItems = state.foodsToAvoid.length
     ? state.foodsToAvoid
         .map(
@@ -588,7 +669,7 @@ function renderAvoidanceCard() {
       <div>
         <div class="avoidance-head">
           <span class="material-symbols-outlined today-inline-icon error" aria-hidden="true">block</span>
-          <span class="streak-pill"><span class="material-symbols-outlined" aria-hidden="true">bolt</span>12-Day Streak</span>
+          <span class="streak-pill"><span class="material-symbols-outlined" aria-hidden="true">bolt</span>${avoidanceStreakLabel}</span>
         </div>
         <h3>Foods to Avoid</h3>
         <ul>${foodItems}</ul>
@@ -853,35 +934,51 @@ function getTodaySummary(completed, total) {
 function getAchievements() {
   const total = state.habits.reduce((sum, habit) => sum + totalCompletions(habit), 0);
   const best = state.habits.reduce((max, habit) => Math.max(max, bestStreakForHabit(habit)), 0);
-  const hasMindfulness = state.habits.some((habit) => habit.category === "Mindfulness" && totalCompletions(habit) >= 5);
-  const hasHydration = state.habits.some((habit) => habit.name.toLowerCase().includes("hydration") && totalCompletions(habit) >= 7);
+  const mindfulnessTotal = state.habits
+    .filter((habit) => habit.category === "Mindfulness")
+    .reduce((sum, habit) => sum + totalCompletions(habit), 0);
+  const hydrationTotal = state.habits
+    .filter((habit) => habit.name.toLowerCase().includes("hydration"))
+    .reduce((sum, habit) => sum + totalCompletions(habit), 0);
 
   return [
     {
       title: "Early Momentum",
       description: "Complete 5 habits total",
       icon: "workspace_premium",
-      unlocked: total >= 5
+      unlocked: total >= 5,
+      progress: milestoneProgress(total, 5),
+      progressText: `${Math.min(total, 5)} of 5 completions`
     },
     {
       title: "Hydration Hero",
       description: "Log hydration 7 times",
       icon: "water_drop",
-      unlocked: hasHydration
+      unlocked: hydrationTotal >= 7,
+      progress: milestoneProgress(hydrationTotal, 7),
+      progressText: `${Math.min(hydrationTotal, 7)} of 7 hydration logs`
     },
     {
       title: "Mindful Master",
       description: "Finish 5 mindfulness sessions",
       icon: "self_improvement",
-      unlocked: hasMindfulness
+      unlocked: mindfulnessTotal >= 5,
+      progress: milestoneProgress(mindfulnessTotal, 5),
+      progressText: `${Math.min(mindfulnessTotal, 5)} of 5 sessions`
     },
     {
       title: "Streak Builder",
       description: "Reach a 14 day streak",
       icon: "local_fire_department",
-      unlocked: best >= 14
+      unlocked: best >= 14,
+      progress: milestoneProgress(best, 14),
+      progressText: `${Math.min(best, 14)} of 14 streak days`
     }
   ];
+}
+
+function milestoneProgress(value, target) {
+  return Math.min(100, Math.round((value / target) * 100));
 }
 
 function completionPercentForDay(key) {
@@ -904,6 +1001,46 @@ function completedThisMonth() {
       }).length
     );
   }, 0);
+}
+
+function monthlyCategoryProgress(today = new Date()) {
+  const grouped = new Map();
+
+  state.habits.forEach((habit) => {
+    const progress = monthProgressForHabit(habit, today);
+    const category = habit.category || "Custom";
+    const current = grouped.get(category) || { name: category, possible: 0, completed: 0 };
+    current.possible += progress.possible;
+    current.completed += progress.completed;
+    grouped.set(category, current);
+  });
+
+  return Array.from(grouped.values())
+    .filter((category) => category.completed > 0)
+    .map((category) => ({
+      ...category,
+      percent: category.possible ? Math.round((category.completed / category.possible) * 100) : 0
+    }))
+    .sort((first, second) => second.completed - first.completed || first.name.localeCompare(second.name));
+}
+
+function monthProgressForHabit(habit, today = new Date()) {
+  const monthStart = new Date(today.getFullYear(), today.getMonth(), 1, 12);
+  const daysElapsed = Math.max(1, Math.floor((today - monthStart) / DAY_MS) + 1);
+  const createdAt = habit.createdAt || dateKey(monthStart);
+  let possible = 0;
+  let completed = 0;
+
+  for (let offset = 0; offset < daysElapsed; offset += 1) {
+    const day = addDays(monthStart, offset);
+    const key = dateKey(day);
+    if (key >= createdAt) {
+      possible += 1;
+      if (habit.completions[key]) completed += 1;
+    }
+  }
+
+  return { possible, completed };
 }
 
 function avoidanceLogsThisMonth(date) {
@@ -952,40 +1089,28 @@ function daysInMonth(date) {
 
 function habitProgress(habit, todayKey, index) {
   if (habit.completions[todayKey]) return 100;
-  const presets = [75, 60, 90, 0, 45, 30];
-  return presets[index % presets.length];
+  return 0;
 }
 
 function progressLabel(habit, progress) {
-  if (habit.name.toLowerCase().includes("meditation")) return "15 of 20 mins completed";
-  if (habit.name.toLowerCase().includes("hydration")) return "1.5L / 2L";
-  if (habit.name.toLowerCase().includes("read")) return progress >= 90 ? "Almost there" : `${progress}% complete`;
-  return `${progress}% complete`;
+  return progress ? `${progress}% complete` : "Pending today";
 }
 
 function shortProgressLabel(habit, progress) {
-  if (habit.name.toLowerCase().includes("hydration")) return "1.5L / 2L";
-  if (habit.name.toLowerCase().includes("read")) return "Almost there";
-  return `${progress}% complete`;
+  return progress ? `${progress}% complete` : "Pending today";
 }
 
 function monthlyCompletionPercent() {
   if (!state.habits.length) return 0;
 
   const today = new Date();
-  const monthStart = new Date(today.getFullYear(), today.getMonth(), 1, 12);
-  const daysElapsed = Math.max(1, Math.floor((today - monthStart) / DAY_MS) + 1);
   let possible = 0;
   let completed = 0;
 
   state.habits.forEach((habit) => {
-    for (let offset = 0; offset < daysElapsed; offset += 1) {
-      const day = addDays(monthStart, offset);
-      if (dateKey(day) >= habit.createdAt) {
-        possible += 1;
-        if (habit.completions[dateKey(day)]) completed += 1;
-      }
-    }
+    const progress = monthProgressForHabit(habit, today);
+    possible += progress.possible;
+    completed += progress.completed;
   });
 
   return possible ? Math.round((completed / possible) * 100) : 0;

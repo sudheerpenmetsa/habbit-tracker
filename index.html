@@ -75,7 +75,7 @@
             <div class="goal-ring">
               <svg viewBox="0 0 128 128" aria-label="Monthly goal progress">
                 <circle class="ring-track" cx="64" cy="64" r="56"></circle>
-                <circle class="ring-value static-goal-ring" cx="64" cy="64" r="56"></circle>
+                <circle class="ring-value" id="goal-progress-ring" cx="64" cy="64" r="56"></circle>
               </svg>
               <div>
                 <strong id="goal-progress-score">68%</strong>
@@ -85,18 +85,7 @@
             <div class="goal-breakdown">
               <h3>Overall Progress</h3>
               <p id="goal-progress-copy">You've stayed consistent this month. Keep maintaining your momentum.</p>
-              <div class="goal-category">
-                <div><span>Health</span><strong>80%</strong></div>
-                <div class="progress-track compact"><span style="width: 80%"></span></div>
-              </div>
-              <div class="goal-category">
-                <div><span>Reading</span><strong class="secondary-text">50%</strong></div>
-                <div class="progress-track compact"><span class="secondary" style="width: 50%"></span></div>
-              </div>
-              <div class="goal-category">
-                <div><span>Mindful Avoidance</span><strong class="tertiary-text">75%</strong></div>
-                <div class="progress-track compact"><span class="tertiary-fill" style="width: 75%"></span></div>
-              </div>
+              <div class="goal-category-list" id="goal-category-list"></div>
             </div>
           </div>
         </section>
@@ -109,42 +98,14 @@
             </div>
             <span class="label">Achievements</span>
           </div>
-          <div class="milestone-row">
-            <article>
-              <span class="material-symbols-outlined" aria-hidden="true">local_fire_department</span>
-              <p>15 Day<br />Meditation Streak</p>
-            </article>
-            <article>
-              <span class="material-symbols-outlined secondary-text" aria-hidden="true">auto_stories</span>
-              <p>Finished<br />2 Books</p>
-            </article>
-            <article>
-              <span class="material-symbols-outlined tertiary-text" aria-hidden="true">directions_run</span>
-              <p>50km<br />Walked</p>
-            </article>
-          </div>
+          <div class="milestone-row" id="monthly-milestone-row"></div>
           <button class="whatsapp-share" type="button">
             <span class="material-symbols-outlined" aria-hidden="true">ios_share</span>
             <span>Share via WhatsApp</span>
           </button>
           <div class="upcoming-milestones">
             <p class="label">Upcoming Milestones</p>
-            <article>
-              <span class="material-symbols-outlined" aria-hidden="true">schedule</span>
-              <div>
-                <strong>20 Day Mindfulness Streak</strong>
-                <span>5 days to go</span>
-              </div>
-              <div class="mini-progress"><span style="width: 75%"></span></div>
-            </article>
-            <article>
-              <span class="material-symbols-outlined" aria-hidden="true">library_books</span>
-              <div>
-                <strong>Complete 3rd Book</strong>
-                <span>85% progress</span>
-              </div>
-              <div class="mini-progress"><span class="secondary" style="width: 85%"></span></div>
-            </article>
+            <div id="upcoming-milestone-list"></div>
           </div>
         </section>
 
