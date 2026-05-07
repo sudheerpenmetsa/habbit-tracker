@@ -1,6 +1,12 @@
 const STORAGE_KEY = "mindfulMomentumState";
+const SUPABASE_URL = "https://kdomlsmuwvpppfrsaxyi.supabase.co";
+const SUPABASE_KEY = "sb_publishable_-UapqZBXGgo1GOl_NOLMEA_rq2SVFNz";
 const DAY_MS = 24 * 60 * 60 * 1000;
 const CIRCLE_LENGTH = 364.42;
+const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
+let currentUser = null;
+let syncReady = false;
+let remoteSaveTimer = null;
 
 const defaultHabits = [
   {
@@ -42,6 +48,11 @@ const state = loadState();
 const elements = {
   screens: document.querySelectorAll(".screen"),
   navItems: document.querySelectorAll("[data-nav-target]"),
+  authForm: document.querySelector("#auth-form"),
+  authEmail: document.querySelector("#auth-email"),
+  syncStatus: document.querySelector("#sync-status"),
+  syncDetail: document.querySelector("#sync-detail"),
+  syncSignOut: document.querySelector("#sync-sign-out"),
   todayDate: document.querySelector("#today-date"),
   todayHabits: document.querySelector("#today-habits"),
   libraryHabits: document.querySelector("#library-habits"),
@@ -97,10 +108,11 @@ bootstrap();
 
 function bootstrap() {
   seedCompletionHistory();
-  saveState();
+  saveState({ localOnly: true });
   document.body.dataset.screen = "today";
   wireEvents();
   render();
+  initSupabase();
 }
 
 function wireEvents() {
@@ -137,8 +149,15 @@ function wireEvents() {
   });
 
   document.querySelector("[data-sign-out]").addEventListener("click", () => {
-    showToast("This local tracker does not use an account yet.");
+    signOut();
   });
+
+  elements.authForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    await sendMagicLink(elements.authEmail.value.trim());
+  });
+
+  elements.syncSignOut.addEventListener("click", () => signOut());
 
   document.querySelector("[data-export]").addEventListener("click", exportData);
 
@@ -192,6 +211,124 @@ function wireEvents() {
   });
 
   document.querySelector("[data-close-book]").addEventListener("click", () => elements.bookDialog.close());
+}
+
+async function initSupabase() {
+  if (!supabaseClient) {
+    updateSyncUI("Local-only mode", "Supabase library did not load.");
+    return;
+  }
+
+  const { data, error } = await supabaseClient.auth.getSession();
+  if (error) {
+    updateSyncUI("Sync unavailable", error.message);
+    return;
+  }
+
+  await applySession(data.session);
+
+  supabaseClient.auth.onAuthStateChange((_event, session) => {
+    applySession(session);
+  });
+}
+
+async function sendMagicLink(email) {
+  if (!supabaseClient || !email) return;
+
+  updateSyncUI("Sending sign-in link", "Check your email after submitting.");
+  const redirectTo = window.location.href.split("#")[0];
+  const { error } = await supabaseClient.auth.signInWithOtp({
+    email,
+    options: { emailRedirectTo: redirectTo }
+  });
+
+  if (error) {
+    updateSyncUI("Sign-in failed", error.message);
+    showToast(error.message);
+    return;
+  }
+
+  updateSyncUI("Check your email", "Open the magic link on this device.");
+  showToast("Magic link sent.");
+}
+
+async function signOut() {
+  if (!supabaseClient) return;
+  await supabaseClient.auth.signOut();
+  currentUser = null;
+  syncReady = false;
+  updateSyncUI("Local-only mode", "Sign in to sync across devices.");
+  showToast("Signed out.");
+}
+
+async function applySession(session) {
+  currentUser = session?.user || null;
+  syncReady = false;
+
+  if (!currentUser) {
+    updateSyncUI("Local-only mode", "Sign in to sync across devices.");
+    return;
+  }
+
+  updateSyncUI("Syncing", currentUser.email || "Loading cloud data.");
+  await loadRemoteState();
+  syncReady = true;
+  updateSyncUI("Synced", currentUser.email || "Cloud sync is active.");
+}
+
+function updateSyncUI(status, detail) {
+  elements.syncStatus.textContent = status;
+  elements.syncDetail.textContent = detail;
+  elements.authForm.hidden = Boolean(currentUser);
+  elements.syncSignOut.hidden = !currentUser;
+}
+
+async function loadRemoteState() {
+  const { data, error } = await supabaseClient
+    .from("app_state")
+    .select("data")
+    .eq("user_id", currentUser.id)
+    .maybeSingle();
+
+  if (error) {
+    updateSyncUI("Setup needed", "Run the Supabase SQL setup, then refresh.");
+    console.error(error);
+    return;
+  }
+
+  if (data?.data) {
+    Object.assign(state, normalizeState(data.data));
+    saveState({ localOnly: true });
+    render();
+    return;
+  }
+
+  await saveRemoteState();
+}
+
+function queueRemoteSave() {
+  clearTimeout(remoteSaveTimer);
+  remoteSaveTimer = setTimeout(() => {
+    saveRemoteState();
+  }, 350);
+}
+
+async function saveRemoteState() {
+  if (!supabaseClient || !currentUser) return;
+
+  const { error } = await supabaseClient.from("app_state").upsert({
+    user_id: currentUser.id,
+    data: serializeState(),
+    updated_at: new Date().toISOString()
+  });
+
+  if (error) {
+    updateSyncUI("Sync failed", error.message);
+    console.error(error);
+    return;
+  }
+
+  updateSyncUI("Synced", currentUser.email || "Cloud sync is active.");
 }
 
 function setLibraryPanel(panelName) {
@@ -935,37 +1072,41 @@ function exportData() {
 function loadState() {
   const saved = localStorage.getItem(STORAGE_KEY);
   if (!saved) {
-    return {
-      habits: structuredClone(defaultHabits),
-      books: [],
-      foodsToAvoid: [],
-      avoidanceLogs: [],
-      remindersEnabled: true
-    };
+    return normalizeState({});
   }
 
   try {
-    const parsed = JSON.parse(saved);
-    return {
-      habits: Array.isArray(parsed.habits) ? parsed.habits : structuredClone(defaultHabits),
-      books: Array.isArray(parsed.books) ? parsed.books : [],
-      foodsToAvoid: Array.isArray(parsed.foodsToAvoid) ? parsed.foodsToAvoid : [],
-      avoidanceLogs: Array.isArray(parsed.avoidanceLogs) ? parsed.avoidanceLogs : [],
-      remindersEnabled: parsed.remindersEnabled !== false
-    };
+    return normalizeState(JSON.parse(saved));
   } catch {
-    return {
-      habits: structuredClone(defaultHabits),
-      books: [],
-      foodsToAvoid: [],
-      avoidanceLogs: [],
-      remindersEnabled: true
-    };
+    return normalizeState({});
   }
 }
 
-function saveState() {
+function normalizeState(input) {
+  return {
+    habits: Array.isArray(input.habits) ? input.habits : structuredClone(defaultHabits),
+    books: Array.isArray(input.books) ? input.books : [],
+    foodsToAvoid: Array.isArray(input.foodsToAvoid) ? input.foodsToAvoid : [],
+    avoidanceLogs: Array.isArray(input.avoidanceLogs) ? input.avoidanceLogs : [],
+    remindersEnabled: input.remindersEnabled !== false
+  };
+}
+
+function serializeState() {
+  return {
+    habits: state.habits,
+    books: state.books,
+    foodsToAvoid: state.foodsToAvoid,
+    avoidanceLogs: state.avoidanceLogs,
+    remindersEnabled: state.remindersEnabled
+  };
+}
+
+function saveState(options = {}) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  if (syncReady && currentUser && !options.localOnly) {
+    queueRemoteSave();
+  }
 }
 
 function emptyState(icon, title, text) {
