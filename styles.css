@@ -2936,3 +2936,81 @@ body[data-screen="today"] .quick-log-fab {
     justify-content: center;
   }
 }
+
+/* Keep the published app in a mobile-sized shell even on desktop browsers. */
+@media (min-width: 431px) {
+  :root {
+    --content-max: 430px;
+  }
+
+  .top-app-bar {
+    right: auto;
+    left: 50%;
+    width: min(100%, var(--content-max));
+    transform: translateX(-50%);
+    grid-template-columns: 44px minmax(0, 1fr) 44px;
+    padding-inline: 14px;
+  }
+
+  .app-shell {
+    width: min(100%, var(--content-max));
+    padding: calc(92px + env(safe-area-inset-top)) 14px calc(108px + env(safe-area-inset-bottom));
+  }
+
+  .bottom-nav {
+    right: auto;
+    left: 50%;
+    width: min(100%, var(--content-max));
+    transform: translateX(-50%);
+  }
+
+  .quick-log-fab {
+    right: max(20px, calc((100vw - var(--content-max)) / 2 + 20px));
+    left: auto;
+    transform: none;
+  }
+
+  .quick-log-fab button {
+    width: 56px;
+    padding: 0;
+  }
+
+  .quick-log-fab button span:last-child {
+    display: none;
+  }
+
+  .today-bento,
+  .library-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .book-grid,
+  .stats-grid,
+  .profile-mini-stats,
+  .achievement-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .book-form {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-stats-bento,
+  .profile-hero {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    text-align: center;
+  }
+
+  .monthly-goal-body {
+    flex-direction: column;
+  }
+
+  .goal-ring {
+    align-self: center;
+  }
+
+  .chip-row {
+    justify-content: center;
+  }
+}
