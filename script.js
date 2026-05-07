@@ -1,5 +1,5 @@
 const STORAGE_KEY = "mindfulMomentumState";
-const DATA_VERSION = 2;
+const DATA_VERSION = 3;
 const SUPABASE_URL = "https://kdomlsmuwvpppfrsaxyi.supabase.co";
 const SUPABASE_KEY = "sb_publishable_-UapqZBXGgo1GOl_NOLMEA_rq2SVFNz";
 const DAY_MS = 24 * 60 * 60 * 1000;

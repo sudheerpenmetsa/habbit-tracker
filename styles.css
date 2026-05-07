@@ -79,6 +79,10 @@ button {
   cursor: pointer;
 }
 
+[hidden] {
+  display: none !important;
+}
+
 .material-symbols-outlined {
   display: inline-flex;
   align-items: center;
