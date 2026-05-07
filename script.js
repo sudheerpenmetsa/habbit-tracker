@@ -1,4 +1,5 @@
 const STORAGE_KEY = "mindfulMomentumState";
+const DATA_VERSION = 2;
 const SUPABASE_URL = "https://kdomlsmuwvpppfrsaxyi.supabase.co";
 const SUPABASE_KEY = "sb_publishable_-UapqZBXGgo1GOl_NOLMEA_rq2SVFNz";
 const DAY_MS = 24 * 60 * 60 * 1000;
@@ -302,9 +303,11 @@ async function loadRemoteState() {
   }
 
   if (data?.data) {
+    const wasLegacyData = data.data.dataVersion !== DATA_VERSION;
     Object.assign(state, normalizeState(data.data));
     saveState({ localOnly: true });
     render();
+    if (wasLegacyData) await saveRemoteState();
     return;
   }
 
@@ -1193,17 +1196,26 @@ function loadState() {
 }
 
 function normalizeState(input) {
+  const isCurrentVersion = input.dataVersion === DATA_VERSION;
+  const habits = Array.isArray(input.habits) ? input.habits : structuredClone(defaultHabits);
+
   return {
-    habits: Array.isArray(input.habits) ? input.habits : structuredClone(defaultHabits),
+    dataVersion: DATA_VERSION,
+    habits: habits.map((habit) => ({
+      ...habit,
+      createdAt: habit.createdAt || dateKey(new Date()),
+      completions: isCurrentVersion && habit.completions && typeof habit.completions === "object" ? habit.completions : {}
+    })),
     books: Array.isArray(input.books) ? input.books : [],
     foodsToAvoid: Array.isArray(input.foodsToAvoid) ? input.foodsToAvoid : [],
-    avoidanceLogs: Array.isArray(input.avoidanceLogs) ? input.avoidanceLogs : [],
+    avoidanceLogs: isCurrentVersion && Array.isArray(input.avoidanceLogs) ? input.avoidanceLogs : [],
     remindersEnabled: input.remindersEnabled !== false
   };
 }
 
 function serializeState() {
   return {
+    dataVersion: DATA_VERSION,
     habits: state.habits,
     books: state.books,
     foodsToAvoid: state.foodsToAvoid,
