@@ -21,7 +21,6 @@
       href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23006d36'/%3E%3Cpath d='M17 33c5 10 12 15 21 15 10 0 17-6 20-18' fill='none' stroke='white' stroke-width='6' stroke-linecap='round'/%3E%3Ccircle cx='23' cy='23' r='6' fill='%236dfe9c'/%3E%3C/svg%3E"
     />
     <link rel="stylesheet" href="styles.css" />
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   </head>
   <body>
     <header class="top-app-bar">
@@ -33,18 +32,6 @@
         <span class="material-symbols-outlined" aria-hidden="true">notifications</span>
       </button>
     </header>
-
-    <section class="sync-panel" id="sync-panel" aria-label="Cloud sync">
-      <div>
-        <strong id="sync-status">Local-only mode</strong>
-        <span id="sync-detail">Sign in to sync across devices.</span>
-      </div>
-      <form id="auth-form">
-        <input id="auth-email" type="email" autocomplete="email" placeholder="Email address" required />
-        <button type="submit">Send Link</button>
-      </form>
-      <button class="sync-sign-out" id="sync-sign-out" type="button" hidden>Sign Out</button>
-    </section>
 
     <main class="app-shell">
       <section class="screen is-active" id="today-screen" data-screen="today" aria-labelledby="today-heading">
@@ -432,6 +419,11 @@
             <button class="settings-row" type="button">
               <span class="material-symbols-outlined" aria-hidden="true">security</span>
               <span>Privacy &amp; Security</span>
+              <span class="material-symbols-outlined row-end" aria-hidden="true">chevron_right</span>
+            </button>
+            <button class="settings-row" type="button" data-connect-sync>
+              <span class="material-symbols-outlined" aria-hidden="true">sync</span>
+              <span id="sync-settings-label">Local Sync</span>
               <span class="material-symbols-outlined row-end" aria-hidden="true">chevron_right</span>
             </button>
             <button class="settings-row" type="button" data-export>

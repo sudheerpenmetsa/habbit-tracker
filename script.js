@@ -1,11 +1,8 @@
 const STORAGE_KEY = "mindfulMomentumState";
 const DATA_VERSION = 3;
-const SUPABASE_URL = "https://kdomlsmuwvpppfrsaxyi.supabase.co";
-const SUPABASE_KEY = "sb_publishable_-UapqZBXGgo1GOl_NOLMEA_rq2SVFNz";
 const DAY_MS = 24 * 60 * 60 * 1000;
 const CIRCLE_LENGTH = 364.42;
-const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
-let currentUser = null;
+const API_BASE = window.location.protocol === "file:" ? "" : window.location.origin;
 let syncReady = false;
 let remoteSaveTimer = null;
 
@@ -49,11 +46,6 @@ const state = loadState();
 const elements = {
   screens: document.querySelectorAll(".screen"),
   navItems: document.querySelectorAll("[data-nav-target]"),
-  authForm: document.querySelector("#auth-form"),
-  authEmail: document.querySelector("#auth-email"),
-  syncStatus: document.querySelector("#sync-status"),
-  syncDetail: document.querySelector("#sync-detail"),
-  syncSignOut: document.querySelector("#sync-sign-out"),
   todayDate: document.querySelector("#today-date"),
   todayHabits: document.querySelector("#today-habits"),
   libraryHabits: document.querySelector("#library-habits"),
@@ -104,6 +96,7 @@ const elements = {
   profileWellness: document.querySelector("#profile-wellness"),
   achievementGrid: document.querySelector("#achievement-grid"),
   profileStreakChip: document.querySelector("#profile-streak-chip"),
+  syncSettingsLabel: document.querySelector("#sync-settings-label"),
   dialog: document.querySelector("#habit-dialog"),
   habitForm: document.querySelector("#habit-form"),
   reminderToggle: document.querySelector("#reminder-toggle"),
@@ -117,7 +110,7 @@ function bootstrap() {
   document.body.dataset.screen = "today";
   wireEvents();
   render();
-  initSupabase();
+  initServerSync();
 }
 
 function wireEvents() {
@@ -154,15 +147,17 @@ function wireEvents() {
   });
 
   document.querySelector("[data-sign-out]").addEventListener("click", () => {
-    signOut();
+    disconnectSync();
   });
 
-  elements.authForm.addEventListener("submit", async (event) => {
-    event.preventDefault();
-    await sendMagicLink(elements.authEmail.value.trim());
-  });
+  document.querySelector("[data-connect-sync]").addEventListener("click", () => {
+    if (syncReady) {
+      disconnectSync();
+      return;
+    }
 
-  elements.syncSignOut.addEventListener("click", () => signOut());
+    connectServerSync();
+  });
 
   document.querySelector("[data-export]").addEventListener("click", exportData);
 
@@ -218,93 +213,65 @@ function wireEvents() {
   document.querySelector("[data-close-book]").addEventListener("click", () => elements.bookDialog.close());
 }
 
-async function initSupabase() {
-  if (!supabaseClient) {
-    updateSyncUI("Local-only mode", "Supabase library did not load.");
+async function initServerSync() {
+  if (!API_BASE) {
+    updateSyncUI("Local-only mode", "Open the homelab URL to sync across devices.");
     return;
   }
 
-  const { data, error } = await supabaseClient.auth.getSession();
-  if (error) {
-    updateSyncUI("Sync unavailable", error.message);
-    return;
+  try {
+    const response = await fetch(`${API_BASE}/api/health`, { cache: "no-store" });
+    if (!response.ok) throw new Error("No local sync server found.");
+
+    await connectServerSync({ silent: true });
+  } catch (error) {
+    updateSyncUI("Local-only mode", "Run the homelab server to sync across devices.");
   }
-
-  await applySession(data.session);
-
-  supabaseClient.auth.onAuthStateChange((_event, session) => {
-    applySession(session);
-  });
 }
 
-async function sendMagicLink(email) {
-  if (!supabaseClient || !email) return;
-
-  updateSyncUI("Sending sign-in link", "Check your email after submitting.");
-  const redirectTo = window.location.href.split("#")[0];
-  const { error } = await supabaseClient.auth.signInWithOtp({
-    email,
-    options: { emailRedirectTo: redirectTo }
-  });
-
-  if (error) {
-    updateSyncUI("Sign-in failed", error.message);
-    showToast(error.message);
+async function connectServerSync(options = {}) {
+  if (!API_BASE) {
+    updateSyncUI("Local-only mode", "Open the homelab URL to sync across devices.");
     return;
   }
 
-  updateSyncUI("Check your email", "Open the magic link on this device.");
-  showToast("Magic link sent.");
-}
-
-async function signOut() {
-  if (!supabaseClient) return;
-  await supabaseClient.auth.signOut();
-  currentUser = null;
   syncReady = false;
-  updateSyncUI("Local-only mode", "Sign in to sync across devices.");
-  showToast("Signed out.");
-}
+  updateSyncUI("Syncing", "Loading data from your homelab server.", false);
 
-async function applySession(session) {
-  currentUser = session?.user || null;
-  syncReady = false;
-
-  if (!currentUser) {
-    updateSyncUI("Local-only mode", "Sign in to sync across devices.");
-    return;
+  try {
+    await loadRemoteState();
+    syncReady = true;
+    updateSyncUI("Synced", "Local server sync is active.", true);
+    if (!options.silent) showToast("Connected to local sync.");
+  } catch (error) {
+    syncReady = false;
+    updateSyncUI("Sync unavailable", error.message || "Could not connect to local sync.");
+    if (!options.silent) showToast(error.message || "Could not connect to local sync.");
   }
-
-  updateSyncUI("Syncing", currentUser.email || "Loading cloud data.");
-  await loadRemoteState();
-  syncReady = true;
-  updateSyncUI("Synced", currentUser.email || "Cloud sync is active.");
 }
 
-function updateSyncUI(status, detail) {
-  elements.syncStatus.textContent = status;
-  elements.syncDetail.textContent = detail;
-  elements.authForm.hidden = Boolean(currentUser);
-  elements.syncSignOut.hidden = !currentUser;
-  document.body.classList.toggle("is-signed-in", Boolean(currentUser));
+function disconnectSync() {
+  syncReady = false;
+  updateSyncUI("Local-only mode", "Disconnected from local server sync.", false);
+  showToast("Disconnected from local sync.");
+}
+
+function updateSyncUI(status, detail, connected = syncReady) {
+  elements.syncSettingsLabel.textContent = connected ? "Disconnect Local Sync" : "Connect Local Sync";
+  document.body.classList.toggle("is-signed-in", connected);
 }
 
 async function loadRemoteState() {
-  const { data, error } = await supabaseClient
-    .from("app_state")
-    .select("data")
-    .eq("user_id", currentUser.id)
-    .maybeSingle();
+  const response = await fetch(`${API_BASE}/api/state`, {
+    cache: "no-store"
+  });
 
-  if (error) {
-    updateSyncUI("Setup needed", "Run the Supabase SQL setup, then refresh.");
-    console.error(error);
-    return;
-  }
+  if (!response.ok) throw new Error("Could not load local sync data.");
 
-  if (data?.data) {
-    const wasLegacyData = data.data.dataVersion !== DATA_VERSION;
-    Object.assign(state, normalizeState(data.data));
+  const payload = await response.json();
+  if (payload.state) {
+    const wasLegacyData = payload.state.dataVersion !== DATA_VERSION;
+    Object.assign(state, normalizeState(payload.state));
     saveState({ localOnly: true });
     render();
     if (wasLegacyData) await saveRemoteState();
@@ -322,21 +289,22 @@ function queueRemoteSave() {
 }
 
 async function saveRemoteState() {
-  if (!supabaseClient || !currentUser) return;
+  if (!API_BASE) return;
 
-  const { error } = await supabaseClient.from("app_state").upsert({
-    user_id: currentUser.id,
-    data: serializeState(),
-    updated_at: new Date().toISOString()
+  const response = await fetch(`${API_BASE}/api/state`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(serializeState())
   });
 
-  if (error) {
-    updateSyncUI("Sync failed", error.message);
-    console.error(error);
+  if (!response.ok) {
+    updateSyncUI("Sync failed", "Could not save to local server.");
     return;
   }
 
-  updateSyncUI("Synced", currentUser.email || "Cloud sync is active.");
+  updateSyncUI("Synced", "Local server sync is active.", true);
 }
 
 function setLibraryPanel(panelName) {
@@ -1226,7 +1194,7 @@ function serializeState() {
 
 function saveState(options = {}) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-  if (syncReady && currentUser && !options.localOnly) {
+  if (syncReady && !options.localOnly) {
     queueRemoteSave();
   }
 }

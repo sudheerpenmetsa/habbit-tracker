@@ -1,0 +1,6 @@
+.git
+.DS_Store
+README.md
+supabase-setup.sql
+deploy/
+data/

@@ -1,0 +1,14 @@
+services:
+  habit-tracker:
+    build: .
+    image: mindful-momentum:local
+    restart: unless-stopped
+    environment:
+      DATA_FILE: /data/state.json
+    ports:
+      - "${APP_PORT:-8080}:8080"
+    volumes:
+      - habit-data:/data
+
+volumes:
+  habit-data:

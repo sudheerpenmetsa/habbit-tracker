@@ -1,0 +1,100 @@
+name: Deploy To VM
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-vm
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    env:
+      VM_HOST: ${{ secrets.VM_HOST }}
+      VM_USER: ${{ secrets.VM_USER }}
+      VM_PORT: ${{ secrets.VM_PORT }}
+      VM_SSH_KEY: ${{ secrets.VM_SSH_KEY }}
+      APP_PORT: ${{ vars.APP_PORT }}
+      DEPLOY_PATH: ${{ vars.DEPLOY_PATH }}
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Validate deployment config
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          : "${VM_HOST:?Set the VM_HOST repository secret}"
+          : "${VM_USER:?Set the VM_USER repository secret}"
+          : "${VM_SSH_KEY:?Set the VM_SSH_KEY repository secret}"
+
+      - name: Configure SSH
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          VM_PORT="${VM_PORT:-22}"
+
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          printf '%s\n' "$VM_SSH_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -p "$VM_PORT" "$VM_HOST" >> ~/.ssh/known_hosts
+
+      - name: Package app
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          tar \
+            --exclude='.git' \
+            --exclude='.env' \
+            --exclude='data' \
+            -czf /tmp/mindful-momentum.tar.gz .
+
+      - name: Upload app package
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          VM_PORT="${VM_PORT:-22}"
+          scp -i ~/.ssh/deploy_key -P "$VM_PORT" /tmp/mindful-momentum.tar.gz "$VM_USER@$VM_HOST:/tmp/mindful-momentum.tar.gz"
+
+      - name: Deploy on VM
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          VM_PORT="${VM_PORT:-22}"
+          APP_PORT="${APP_PORT:-8080}"
+
+          ssh -i ~/.ssh/deploy_key -p "$VM_PORT" "$VM_USER@$VM_HOST" \
+            "APP_PORT='$APP_PORT' DEPLOY_PATH='$DEPLOY_PATH' bash -s" <<'REMOTE'
+          set -euo pipefail
+
+          DEPLOY_PATH="${DEPLOY_PATH:-$HOME/apps/mindful-momentum}"
+
+          case "$DEPLOY_PATH" in
+            ""|"/"|"/home"|"/home/"|"/root"|"/root/"|"/opt"|"/opt/")
+              echo "Refusing unsafe DEPLOY_PATH: $DEPLOY_PATH" >&2
+              exit 1
+              ;;
+          esac
+
+          mkdir -p "$DEPLOY_PATH"
+          find "$DEPLOY_PATH" -mindepth 1 -maxdepth 1 ! -name data -exec rm -rf {} +
+          tar -xzf /tmp/mindful-momentum.tar.gz -C "$DEPLOY_PATH"
+
+          cat > "$DEPLOY_PATH/.env" <<ENV
+          APP_PORT=$APP_PORT
+          ENV
+
+          cd "$DEPLOY_PATH"
+          docker compose up -d --build
+          docker image prune -f
+          rm -f /tmp/mindful-momentum.tar.gz
+          REMOTE
