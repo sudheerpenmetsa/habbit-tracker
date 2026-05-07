@@ -107,7 +107,6 @@ const elements = {
 bootstrap();
 
 function bootstrap() {
-  seedCompletionHistory();
   saveState({ localOnly: true });
   document.body.dataset.screen = "today";
   wireEvents();
@@ -281,6 +280,7 @@ function updateSyncUI(status, detail) {
   elements.syncDetail.textContent = detail;
   elements.authForm.hidden = Boolean(currentUser);
   elements.syncSignOut.hidden = !currentUser;
+  document.body.classList.toggle("is-signed-in", Boolean(currentUser));
 }
 
 async function loadRemoteState() {
@@ -1040,21 +1040,6 @@ function bestStreakForHabit(habit) {
 
 function lastSevenDays() {
   return Array.from({ length: 7 }, (_, index) => addDays(new Date(), index - 6));
-}
-
-function seedCompletionHistory(force = false) {
-  const hasHistory = state.habits.some((habit) => Object.keys(habit.completions).length > 0);
-  if (hasHistory && !force) return;
-
-  state.habits.forEach((habit, habitIndex) => {
-    habit.completions = {};
-    for (let offset = -12; offset <= -1; offset += 1) {
-      const shouldComplete = habitIndex === 0 || (Math.abs(offset) + habitIndex) % (habitIndex + 3) !== 0;
-      if (shouldComplete) {
-        habit.completions[dateKey(addDays(new Date(), offset))] = true;
-      }
-    }
-  });
 }
 
 function exportData() {

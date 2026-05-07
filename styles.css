@@ -168,6 +168,10 @@ button {
   padding: calc(190px + env(safe-area-inset-top)) 20px calc(108px + env(safe-area-inset-bottom));
 }
 
+body.is-signed-in .app-shell {
+  padding-top: calc(112px + env(safe-area-inset-top));
+}
+
 .sync-panel {
   position: fixed;
   top: calc(72px + env(safe-area-inset-top));
@@ -230,6 +234,25 @@ button {
 
 .sync-sign-out {
   justify-self: start;
+}
+
+body.is-signed-in .sync-panel {
+  right: 20px;
+  left: auto;
+  width: min(260px, calc(100vw - 40px));
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+}
+
+body.is-signed-in .sync-panel span {
+  display: none;
+}
+
+body.is-signed-in .sync-sign-out {
+  min-height: 30px;
+  padding: 0 10px;
 }
 
 .screen {
