@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="Weekly Wellness Tracker icon">
+  <defs>
+    <linearGradient id="bg" x1="0%" x2="100%" y1="0%" y2="100%">
+      <stop offset="0%" stop-color="#0f5e9c" />
+      <stop offset="100%" stop-color="#082f49" />
+    </linearGradient>
+  </defs>
+  <rect width="256" height="256" rx="56" fill="url(#bg)" />
+  <path
+    d="M72 72c0-8.8 7.2-16 16-16h48c39.8 0 72 32.2 72 72s-32.2 72-72 72H88c-8.8 0-16-7.2-16-16V72Z"
+    fill="#eaf3ff"
+    opacity="0.14"
+  />
+  <path
+    d="M86 128c0-28.7 23.3-52 52-52s52 23.3 52 52-23.3 52-52 52-52-23.3-52-52Zm16 0c0 19.9 16.1 36 36 36s36-16.1 36-36-16.1-36-36-36-36 16.1-36 36Z"
+    fill="#eaf3ff"
+  />
+  <path
+    d="M128 100c3.3 0 6 2.7 6 6v26.5l15 9c2.9 1.7 3.8 5.4 2.2 8.2-1.7 2.9-5.4 3.8-8.2 2.2l-18-10.8a6 6 0 0 1-3-5.1V106c0-3.3 2.7-6 6-6Z"
+    fill="#38bdf8"
+  />
+</svg>

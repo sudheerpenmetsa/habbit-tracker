@@ -1,540 +1,283 @@
 <!DOCTYPE html>
-<html lang="en" class="light">
+<html class="light" lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="theme-color" content="#f8f9ff" />
     <meta
-      name="description"
-      content="Mindful Momentum is a mobile-first habit tracker for daily rituals, streaks, progress, and achievements."
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
     />
-    <title>Mindful Momentum</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <meta name="theme-color" content="#0f5e9c" />
+    <title>Wellness</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link
-      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
       rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
     />
-    <link rel="manifest" href="manifest.webmanifest" />
     <link
-      rel="icon"
-      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23006d36'/%3E%3Cpath d='M17 33c5 10 12 15 21 15 10 0 17-6 20-18' fill='none' stroke='white' stroke-width='6' stroke-linecap='round'/%3E%3Ccircle cx='23' cy='23' r='6' fill='%236dfe9c'/%3E%3C/svg%3E"
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
     />
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-dim": "#c8d8ef",
+              "on-secondary-fixed": "#082f49",
+              "on-error": "#ffffff",
+              "surface-container": "#e2edff",
+              "on-background": "#0f172a",
+              "error-container": "#ffdad6",
+              "inverse-surface": "#172033",
+              "on-secondary-container": "#075985",
+              "surface-variant": "#d7e7fb",
+              "secondary": "#0284c7",
+              "tertiary": "#075985",
+              "on-tertiary-container": "#dbeafe",
+              "tertiary-container": "#0e7490",
+              "on-primary-container": "#dbeafe",
+              "surface-bright": "#f4f8ff",
+              "primary-fixed-dim": "#93c5fd",
+              "primary-container": "#0b4a78",
+              "error": "#ba1a1a",
+              "on-surface-variant": "#334155",
+              "on-tertiary": "#ffffff",
+              "surface-container-lowest": "#ffffff",
+              "outline": "#64748b",
+              "on-secondary": "#ffffff",
+              "primary-fixed": "#dbeafe",
+              "on-tertiary-fixed-variant": "#075985",
+              "surface-tint": "#0f5e9c",
+              "tertiary-fixed": "#cffafe",
+              "on-surface": "#0f172a",
+              "secondary-fixed-dim": "#bfdbfe",
+              "secondary-fixed": "#dbeafe",
+              "on-primary": "#ffffff",
+              "on-error-container": "#93000a",
+              "on-secondary-fixed-variant": "#075985",
+              "surface-container-low": "#eaf3ff",
+              "surface": "#f4f8ff",
+              "outline-variant": "#b8c7d9",
+              "on-primary-fixed-variant": "#0c4a6e",
+              "surface-container-high": "#d8eaff",
+              "inverse-primary": "#93c5fd",
+              "primary": "#0f5e9c",
+              "on-primary-fixed": "#061a2f",
+              "on-tertiary-fixed": "#071a2c",
+              "background": "#f4f8ff",
+              "inverse-on-surface": "#eaf3ff",
+              "secondary-container": "#7dd3fc",
+              "surface-container-highest": "#d7e7fb",
+              "tertiary-fixed-dim": "#93c5fd",
+            },
+            borderRadius: {
+              DEFAULT: "0.25rem",
+              lg: "0.5rem",
+              xl: "0.75rem",
+              full: "9999px",
+            },
+            spacing: {
+              xxl: "48px",
+              md: "16px",
+              xs: "4px",
+              gutter: "16px",
+              xl: "32px",
+              margin: "24px",
+              unit: "4px",
+              sm: "8px",
+              lg: "24px",
+              "stack-md": "16px",
+              "stack-sm": "8px",
+              "stack-lg": "24px",
+              "section-gap": "40px",
+              "margin-page": "20px",
+            },
+            fontFamily: {
+              "body-md": ["Inter"],
+              "caption": ["Inter"],
+              "h3": ["Inter"],
+              "h2": ["Inter"],
+              "body-lg": ["Inter"],
+              "h1": ["Inter"],
+              "label-md": ["Inter"],
+              "body-sm": ["Inter"],
+              "label-caps": ["Inter"],
+              "stat-display": ["Inter"],
+            },
+            fontSize: {
+              "body-md": [
+                "16px",
+                { lineHeight: "1.6", letterSpacing: "0", fontWeight: "400" },
+              ],
+              "caption": [
+                "12px",
+                { lineHeight: "1.4", letterSpacing: "0", fontWeight: "400" },
+              ],
+              "h3": [
+                "24px",
+                { lineHeight: "1.4", letterSpacing: "0", fontWeight: "600" },
+              ],
+              "h2": [
+                "32px",
+                { lineHeight: "1.3", letterSpacing: "-0.01em", fontWeight: "600" },
+              ],
+              "body-lg": [
+                "18px",
+                { lineHeight: "1.6", letterSpacing: "0", fontWeight: "400" },
+              ],
+              "h1": [
+                "40px",
+                { lineHeight: "1.2", letterSpacing: "-0.02em", fontWeight: "700" },
+              ],
+              "label-md": [
+                "14px",
+                { lineHeight: "1.2", letterSpacing: "0.05em", fontWeight: "500" },
+              ],
+              "body-sm": [
+                "15px",
+                { lineHeight: "1.5", letterSpacing: "0em", fontWeight: "400" },
+              ],
+              "label-caps": [
+                "12px",
+                { lineHeight: "1.2", letterSpacing: "0.05em", fontWeight: "600" },
+              ],
+              "stat-display": [
+                "48px",
+                { lineHeight: "1", letterSpacing: "-0.04em", fontWeight: "700" },
+              ],
+            },
+          },
+        },
+      };
+    </script>
+    <link rel="icon" href="assets/icon.svg" type="image/svg+xml" />
+    <link rel="manifest" href="manifest.webmanifest" />
     <link rel="stylesheet" href="styles.css" />
   </head>
-  <body>
-    <header class="top-app-bar">
-      <button class="icon-button" type="button" aria-label="Open habit library" data-nav-target="library">
-        <span class="material-symbols-outlined" aria-hidden="true">menu</span>
-      </button>
-      <h1 class="app-brand">Mindful Momentum</h1>
-      <button class="icon-button" type="button" aria-label="Open notifications" data-open-notifications>
-        <span class="material-symbols-outlined" aria-hidden="true">notifications</span>
-      </button>
-    </header>
-
-    <main class="app-shell">
-      <section class="screen is-active" id="today-screen" data-screen="today" aria-labelledby="today-heading">
-        <section class="today-focus-section" aria-label="Daily progress summary">
+  <body class="bg-background text-on-surface font-body-md antialiased pb-24">
+    <header
+      class="sticky top-0 z-50 border-b border-outline-variant/80 bg-surface/90 backdrop-blur-xl"
+    >
+      <div class="mx-auto flex h-16 max-w-lg items-center justify-between px-5">
+        <div class="flex items-center gap-3">
+          <div
+            class="grid h-9 w-9 place-items-center rounded-2xl bg-primary-container text-sm font-semibold text-on-primary shadow-[0_6px_18px_rgba(15,94,156,0.18)]"
+          >
+            S
+          </div>
           <div>
-            <p class="eyebrow" id="today-date">Today's Focus</p>
-            <h2 id="today-heading">Keep the flow.</h2>
-            <p class="support-text" id="today-summary">Complete one ritual to start today's momentum.</p>
+            <p
+              class="text-[10px] font-semibold uppercase tracking-[0.18em] text-on-surface-variant"
+            >
+              Wellness
+            </p>
+            <h1 class="text-lg font-semibold tracking-tight text-on-surface">
+              Sudheer
+            </h1>
           </div>
-          <div class="focus-ring" aria-live="polite">
-            <svg viewBox="0 0 96 96" role="img" aria-label="Today's completion percentage">
-              <circle class="ring-track" cx="48" cy="48" r="40"></circle>
-              <circle class="ring-value" id="today-ring" cx="48" cy="48" r="40"></circle>
-            </svg>
-            <span id="today-score">0%</span>
-          </div>
-        </section>
-
-        <section class="monthly-goal-card" aria-label="Monthly goal overview">
-          <div class="monthly-goal-heading">
-            <div class="inline-heading">
-              <span class="material-symbols-outlined" aria-hidden="true">calendar_month</span>
-              <h3>Monthly Goal</h3>
-            </div>
-            <span class="label" id="monthly-goal-label">May 2026</span>
-          </div>
-          <div class="monthly-goal-body">
-            <div class="goal-ring">
-              <svg viewBox="0 0 128 128" aria-label="Monthly goal progress">
-                <circle class="ring-track" cx="64" cy="64" r="56"></circle>
-                <circle class="ring-value" id="goal-progress-ring" cx="64" cy="64" r="56"></circle>
-              </svg>
-              <div>
-                <strong id="goal-progress-score">68%</strong>
-                <span>Progress</span>
-              </div>
-            </div>
-            <div class="goal-breakdown">
-              <h3>Overall Progress</h3>
-              <p id="goal-progress-copy">You've stayed consistent this month. Keep maintaining your momentum.</p>
-              <div class="goal-category-list" id="goal-category-list"></div>
-            </div>
-          </div>
-        </section>
-
-        <section class="monthly-milestones-card" aria-label="Monthly milestones">
-          <div class="monthly-goal-heading">
-            <div class="inline-heading">
-              <span class="material-symbols-outlined secondary-text" aria-hidden="true">workspace_premium</span>
-              <h3>Monthly Milestones</h3>
-            </div>
-            <span class="label">Achievements</span>
-          </div>
-          <div class="milestone-row" id="monthly-milestone-row"></div>
-          <button class="whatsapp-share" type="button">
-            <span class="material-symbols-outlined" aria-hidden="true">ios_share</span>
-            <span>Share via WhatsApp</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <button
+            id="installButton"
+            class="hidden rounded-full bg-primary px-3 py-2 text-[12px] font-semibold text-on-primary shadow-[0_10px_24px_rgba(15,94,156,0.18)] transition-all hover:opacity-90 active:scale-95"
+            type="button"
+          >
+            Install
           </button>
-          <div class="upcoming-milestones">
-            <p class="label">Upcoming Milestones</p>
-            <div id="upcoming-milestone-list"></div>
-          </div>
-        </section>
-
-        <section class="today-bento" id="today-habits" aria-label="Today's habits"></section>
-
-        <section class="daily-insight" aria-label="Daily insight">
-          <div class="daily-insight-image" aria-hidden="true"></div>
-          <div class="daily-insight-copy">
-            <p class="label">Daily Insight</p>
-            <p>"Momentum is built in the quiet spaces between actions."</p>
-          </div>
-        </section>
-      </section>
-
-      <section class="screen" id="library-screen" data-screen="library" aria-labelledby="library-heading">
-        <div class="library-segmented" role="tablist" aria-label="Library sections">
-          <button class="is-active" type="button" role="tab" aria-selected="true" data-library-panel="habits">Habits</button>
-          <button type="button" role="tab" aria-selected="false" data-library-panel="books">Books</button>
-        </div>
-
-        <div class="library-panel is-active" id="habit-library-panel">
-        <section class="habit-library-hero">
-          <div>
-            <h2 id="library-heading">Habit Library</h2>
-            <p>Explore curated paths to growth</p>
-          </div>
-          <label class="habit-library-search">
-            <span class="material-symbols-outlined" aria-hidden="true">search</span>
-            <input id="habit-library-search" type="search" placeholder="Find a habit or category..." autocomplete="off" />
-          </label>
-        </section>
-
-        <section class="habit-categories-section" aria-label="Habit categories">
-          <div class="library-section-heading">
-            <h3>Categories</h3>
-            <button type="button">View All</button>
-          </div>
-          <div class="habit-bento-grid">
-            <article class="habit-category-card health">
-              <div>
-                <span class="material-symbols-outlined" aria-hidden="true">favorite</span>
-                <h3>Health</h3>
-                <p>Vibrancy starts here.</p>
-              </div>
-              <span>12 Habits</span>
-            </article>
-            <article class="habit-category-card focus">
-              <div>
-                <span class="material-symbols-outlined" aria-hidden="true">bolt</span>
-                <h3>Focus</h3>
-              </div>
-              <span>8 Pathways</span>
-            </article>
-            <article class="habit-category-card zen">
-              <div>
-                <span class="material-symbols-outlined" aria-hidden="true">self_improvement</span>
-                <h3>Zen</h3>
-              </div>
-              <span>15 Rituals</span>
-            </article>
-          </div>
-        </section>
-
-        <section class="custom-habit-card" aria-label="Build a custom habit">
-          <div class="custom-habit-heading">
-            <div>
-              <span class="material-symbols-outlined" aria-hidden="true">add_circle</span>
-            </div>
-            <div>
-              <h3>Build Custom</h3>
-              <p>Design a unique ritual just for you</p>
-            </div>
-          </div>
-          <form id="custom-habit-form" class="custom-habit-form">
-            <label>
-              <span>Habit Name</span>
-              <input name="name" type="text" placeholder="e.g. Morning Reflection" maxlength="36" required />
-            </label>
-            <div class="custom-habit-fields">
-              <label>
-                <span>Frequency</span>
-                <select name="frequency">
-                  <option>Daily</option>
-                  <option>Weekly</option>
-                  <option>Custom</option>
-                </select>
-              </label>
-              <label>
-                <span>Time of Day</span>
-                <select name="time">
-                  <option>Anytime</option>
-                  <option>Morning</option>
-                  <option>Evening</option>
-                </select>
-              </label>
-            </div>
-            <div class="smart-notification-panel">
-              <div>
-                <span class="material-symbols-outlined" aria-hidden="true">notifications_active</span>
-                <strong>Smart Notifications</strong>
-                <span class="toggle is-on" aria-hidden="true"><span></span></span>
-              </div>
-              <p>Gentle nudges that adapt to your schedule. No anxiety, just quiet reminders.</p>
-            </div>
-            <button class="primary-action wide-action" type="submit">Create Habit</button>
-          </form>
-        </section>
-
-        <section class="recommended-habits-section" aria-label="Recommended habits">
-          <h3>Recommended for you</h3>
-          <div class="recommended-list">
-            <button type="button" data-recommend-habit="Hydrate Hourly" data-recommend-category="Health" data-recommend-icon="water_drop">
-              <span class="material-symbols-outlined" aria-hidden="true">water_drop</span>
-              <span><strong>Hydrate Hourly</strong><small>Boost energy and focus</small></span>
-              <span class="material-symbols-outlined" aria-hidden="true">chevron_right</span>
-            </button>
-            <button type="button" data-recommend-habit="Read 10 Pages" data-recommend-category="Learning" data-recommend-icon="menu_book">
-              <span class="material-symbols-outlined" aria-hidden="true">menu_book</span>
-              <span><strong>Read 10 Pages</strong><small>Sharpen the mind daily</small></span>
-              <span class="material-symbols-outlined" aria-hidden="true">chevron_right</span>
-            </button>
-          </div>
-        </section>
-        </div>
-
-        <div class="library-panel" id="book-library-panel">
-        <section class="books-catalogue-section" aria-label="Books catalogue">
-          <div class="library-section-heading">
-            <h3>Books Catalogue</h3>
-            <button type="button" data-book-filter="all">View All</button>
-          </div>
-        </section>
-        <form class="book-form" id="book-form" aria-label="Add a book">
-          <input name="title" type="text" placeholder="Book title" required />
-          <input name="author" type="text" placeholder="Author" required />
-          <select name="category">
-            <option>Non-fiction</option>
-            <option>Fiction</option>
-            <option>Productivity</option>
-            <option>Psychology</option>
-            <option>Health</option>
-            <option>Mindfulness</option>
-          </select>
-          <select name="status">
-            <option value="backlogged">Backlogged</option>
-            <option value="in-progress">In Progress</option>
-            <option value="completed">Completed</option>
-            <option value="paused">Paused</option>
-          </select>
-          <button class="primary-action" type="submit">Add Book</button>
-        </form>
-        <section class="book-search-section" aria-label="Book search and filters">
-          <label class="book-search">
-            <span class="material-symbols-outlined" aria-hidden="true">search</span>
-            <input id="book-search" type="search" placeholder="Find your next read..." autocomplete="off" />
-          </label>
-          <div class="filter-chips" role="list" aria-label="Book filters">
-            <button class="is-active" type="button" data-book-filter="all">All Books</button>
-            <button type="button" data-book-filter="backlogged">Backlogged</button>
-            <button type="button" data-book-filter="in-progress">In Progress</button>
-            <button type="button" data-book-filter="completed">Completed</button>
-            <button type="button" data-book-filter="paused">Paused</button>
-            <button type="button" data-book-filter="fiction">Fiction</button>
-            <button type="button" data-book-filter="non-fiction">Non-fiction</button>
-          </div>
-        </section>
-        <section class="book-stats-strip" aria-label="Book summary">
-          <article><strong id="book-total-count">0</strong><span>Books</span></article>
-          <article><strong id="book-reading-count">0</strong><span>Reading</span></article>
-          <article><strong id="book-backlog-count">0</strong><span>Backlog</span></article>
-          <article><strong id="book-done-count">0</strong><span>Done</span></article>
-        </section>
-        <section class="book-grid" id="library-habits" aria-label="Book catalogue"></section>
-        </div>
-      </section>
-
-      <section class="screen" id="stats-screen" data-screen="stats" aria-labelledby="stats-heading">
-        <section class="stats-top-row" aria-label="Avoidance summary">
-          <article>
-            <span class="label">Current Streak</span>
-            <div><strong id="avoidance-current">0</strong><span>days</span></div>
-          </article>
-          <article>
-            <span class="label">Best Streak</span>
-            <div><strong id="avoidance-best">0</strong><span>days</span></div>
-          </article>
-          <article class="highlight">
-            <span class="label">Total Avoided</span>
-            <div><strong id="avoidance-total">0</strong><span>days</span></div>
-          </article>
-        </section>
-
-        <section class="avoidance-progress-card" aria-label="Monthly avoidance progress">
-          <div>
-            <h2 id="stats-heading">Monthly Progress</h2>
-            <p id="avoidance-progress-copy">Log avoidance to start this month's progress.</p>
-            <div class="chip-row stat-chip-row">
-              <span class="chip" id="avoidance-month-chip">May 2026</span>
-              <span class="chip primary-chip">Health</span>
-            </div>
-          </div>
-          <div class="mini-ring">
-            <svg viewBox="0 0 96 96" aria-label="Avoidance days this month">
-              <circle class="ring-track" cx="48" cy="48" r="40"></circle>
-              <circle class="ring-value" id="avoidance-ring" cx="48" cy="48" r="40"></circle>
-            </svg>
-            <div><strong id="avoidance-days">0</strong><span id="avoidance-month-total">/31</span></div>
-          </div>
-        </section>
-
-        <section class="calendar-section" aria-label="Avoidance calendar">
-          <div class="calendar-heading">
-            <h3 id="calendar-title">May 2026</h3>
-            <div>
-              <button type="button" aria-label="Previous month"><span class="material-symbols-outlined" aria-hidden="true">chevron_left</span></button>
-              <button type="button" aria-label="Next month"><span class="material-symbols-outlined" aria-hidden="true">chevron_right</span></button>
-            </div>
-          </div>
-          <div class="calendar-card">
-            <div class="calendar-weekdays"><span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span></div>
-            <div class="calendar-grid" id="avoidance-calendar"></div>
-          </div>
-        </section>
-
-        <section class="recent-activity-section" aria-label="Recent activity">
-          <h3>Recent Activity</h3>
-          <div class="activity-list" id="recent-activity"></div>
-          <button class="text-action full-width-action" type="button">View Full History</button>
-        </section>
-
-        <section class="mindful-insight-card" aria-label="Mindful insight">
-          <div>
-            <h3>Mindful Insight</h3>
-            <p>You are most successful on Thursdays. Keep that momentum!</p>
-          </div>
-          <div class="insight-shapes" aria-hidden="true"></div>
-        </section>
-      </section>
-
-      <section class="screen" id="profile-screen" data-screen="profile" aria-labelledby="profile-heading">
-        <section class="profile-hero">
-          <div class="profile-avatar-wrap">
-            <div class="avatar" aria-hidden="true">SR</div>
-            <button class="avatar-edit" type="button" aria-label="Edit profile">
-              <span class="material-symbols-outlined" aria-hidden="true">edit</span>
-            </button>
-          </div>
-          <div class="profile-copy">
-            <h2 id="profile-heading">Sudheer's Momentum</h2>
-            <p>Building a morning ritual of clarity and consistent progress since June 2023.</p>
-            <div class="chip-row">
-              <span class="chip primary-chip">Pro Member</span>
-              <span class="chip" id="profile-streak-chip">Streak: 0 days</span>
-            </div>
-          </div>
-        </section>
-
-        <section class="profile-stats-bento" aria-label="Profile progress summary">
-          <article class="progress-panel monthly-panel">
-            <p class="label">Monthly Progress</p>
-            <div class="ring-wrap" aria-live="polite">
-              <svg class="progress-ring" viewBox="0 0 132 132" role="img" aria-label="Monthly completion percentage">
-                <circle class="ring-track" cx="66" cy="66" r="58"></circle>
-                <circle class="ring-value" id="monthly-ring" cx="66" cy="66" r="58"></circle>
-              </svg>
-              <span class="ring-score" id="monthly-score">0%</span>
-            </div>
-            <p class="support-text" id="monthly-summary">Momentum is building this month.</p>
-          </article>
-
-          <div class="profile-mini-stats">
-            <article class="stat-card profile-stat-card">
-              <span class="material-symbols-outlined stat-icon secondary" aria-hidden="true">check_circle</span>
-              <strong id="profile-total">0</strong>
-              <span class="label">Habits Completed</span>
-            </article>
-            <article class="stat-card profile-stat-card">
-              <span class="material-symbols-outlined stat-icon primary" aria-hidden="true">timer</span>
-              <strong id="profile-focus">0h</strong>
-              <span class="label">Deep Focus Time</span>
-            </article>
-            <article class="stat-card profile-stat-card">
-              <span class="material-symbols-outlined stat-icon tertiary" aria-hidden="true">auto_awesome</span>
-              <strong id="profile-best">0</strong>
-              <span class="label">Streak Record</span>
-            </article>
-            <article class="stat-card profile-stat-card">
-              <span class="material-symbols-outlined stat-icon error" aria-hidden="true">favorite</span>
-              <strong id="profile-wellness">0%</strong>
-              <span class="label">Wellness Rating</span>
-            </article>
-          </div>
-        </section>
-
-        <section class="achievement-section" aria-labelledby="achievements-heading">
-          <div class="section-heading compact split-heading">
-            <div>
-              <h2 id="achievements-heading">Achievements</h2>
-              <p class="support-text">Milestones on your journey of momentum.</p>
-            </div>
-            <button class="text-action" type="button" data-nav-target="stats">View All</button>
-          </div>
-          <div class="achievement-grid" id="achievement-grid"></div>
-        </section>
-
-        <section class="settings-section" aria-labelledby="settings-heading">
-          <h2 id="settings-heading">Settings</h2>
-          <div class="settings-list">
-            <button class="settings-row" type="button">
-              <span class="material-symbols-outlined" aria-hidden="true">person</span>
-              <span>Account Information</span>
-              <span class="material-symbols-outlined row-end" aria-hidden="true">chevron_right</span>
-            </button>
-            <button class="settings-row" type="button" data-toggle-reminders>
-              <span class="material-symbols-outlined" aria-hidden="true">notifications_active</span>
-              <span>Push Notifications</span>
-              <span class="toggle" id="reminder-toggle" aria-hidden="true"><span></span></span>
-            </button>
-            <button class="settings-row" type="button">
-              <span class="material-symbols-outlined" aria-hidden="true">palette</span>
-              <span>Theme &amp; Appearance</span>
-              <span class="material-symbols-outlined row-end" aria-hidden="true">chevron_right</span>
-            </button>
-            <button class="settings-row" type="button">
-              <span class="material-symbols-outlined" aria-hidden="true">security</span>
-              <span>Privacy &amp; Security</span>
-              <span class="material-symbols-outlined row-end" aria-hidden="true">chevron_right</span>
-            </button>
-            <button class="settings-row" type="button" data-connect-sync>
-              <span class="material-symbols-outlined" aria-hidden="true">sync</span>
-              <span id="sync-settings-label">Local Sync</span>
-              <span class="material-symbols-outlined row-end" aria-hidden="true">chevron_right</span>
-            </button>
-            <button class="settings-row" type="button" data-export>
-              <span class="material-symbols-outlined" aria-hidden="true">download</span>
-              <span>Export Data</span>
-              <span class="material-symbols-outlined row-end" aria-hidden="true">chevron_right</span>
-            </button>
-            <button class="settings-row danger" type="button" data-sign-out>
-              <span class="material-symbols-outlined" aria-hidden="true">logout</span>
-              <span>Sign Out</span>
-            </button>
-          </div>
-        </section>
-      </section>
-    </main>
-
-    <div class="quick-log-fab">
-      <button type="button" data-open-add>
-        <span class="material-symbols-outlined" aria-hidden="true">add</span>
-        <span>Quick Log</span>
-      </button>
-    </div>
-
-    <nav class="bottom-nav" aria-label="Primary">
-      <button class="nav-item is-active" type="button" data-nav-target="today">
-        <span class="material-symbols-outlined" aria-hidden="true">calendar_today</span>
-        <span>Today</span>
-      </button>
-      <button class="nav-item" type="button" data-nav-target="library">
-        <span class="material-symbols-outlined" aria-hidden="true">folder_open</span>
-        <span>Library</span>
-      </button>
-      <button class="nav-item" type="button" data-nav-target="stats">
-        <span class="material-symbols-outlined" aria-hidden="true">insights</span>
-        <span>Stats</span>
-      </button>
-      <button class="nav-item" type="button" data-nav-target="profile">
-        <span class="material-symbols-outlined" aria-hidden="true">person</span>
-        <span>Profile</span>
-      </button>
-    </nav>
-
-    <dialog class="habit-dialog" id="habit-dialog">
-      <form method="dialog" class="dialog-card" id="habit-form">
-        <div class="dialog-heading">
-          <div>
-            <p class="eyebrow">New Habit</p>
-            <h2>Create Ritual</h2>
-          </div>
-          <button class="icon-button" type="button" aria-label="Close dialog" data-close-dialog>
-            <span class="material-symbols-outlined" aria-hidden="true">close</span>
+          <button
+            class="grid h-10 w-10 place-items-center rounded-full bg-surface-container-low text-on-surface transition-all hover:bg-surface-container active:scale-95"
+            type="button"
+            aria-label="Notifications"
+          >
+            <span class="material-symbols-outlined">notifications</span>
           </button>
-        </div>
-
-        <label>
-          <span>Name</span>
-          <input name="name" type="text" maxlength="36" required placeholder="Morning walk" />
-        </label>
-
-        <label>
-          <span>Category</span>
-          <select name="category" required>
-            <option value="Mindfulness">Mindfulness</option>
-            <option value="Health">Health</option>
-            <option value="Focus">Focus</option>
-            <option value="Learning">Learning</option>
-            <option value="Home">Home</option>
-          </select>
-        </label>
-
-        <fieldset>
-          <legend>Icon</legend>
-          <div class="icon-picker">
-            <label><input type="radio" name="icon" value="self_improvement" checked /><span>self_improvement</span></label>
-            <label><input type="radio" name="icon" value="water_drop" /><span>water_drop</span></label>
-            <label><input type="radio" name="icon" value="menu_book" /><span>menu_book</span></label>
-            <label><input type="radio" name="icon" value="fitness_center" /><span>fitness_center</span></label>
-            <label><input type="radio" name="icon" value="bedtime" /><span>bedtime</span></label>
-          </div>
-        </fieldset>
-
-        <div class="dialog-actions">
-          <button class="secondary-action" type="button" data-close-dialog>Cancel</button>
-          <button class="primary-action" type="submit">
-            <span class="material-symbols-outlined" aria-hidden="true">check</span>
-            <span>Add Habit</span>
-          </button>
-        </div>
-      </form>
-    </dialog>
-
-    <dialog class="book-dialog" id="book-dialog">
-      <div class="book-detail-card">
-        <button class="icon-button book-detail-close" type="button" aria-label="Close book detail" data-close-book>
-          <span class="material-symbols-outlined" aria-hidden="true">close</span>
-        </button>
-        <div class="book-detail-cover" id="book-detail-cover"></div>
-        <div class="book-detail-copy">
-          <span class="book-tag" id="book-detail-category">Book</span>
-          <h2 id="book-detail-title">Book title</h2>
-          <p id="book-detail-author">Author</p>
-          <div class="book-detail-progress" id="book-detail-progress"></div>
-          <div class="book-detail-actions">
-            <button type="button">Update Progress</button>
-            <button type="button">Mark Complete</button>
-          </div>
         </div>
       </div>
-    </dialog>
+    </header>
 
-    <div class="toast" id="toast" role="status" aria-live="polite"></div>
-    <script src="script.js"></script>
+    <main class="mx-auto max-w-lg space-y-10 px-margin-page pb-10 pt-stack-lg">
+      <section
+        id="view-status"
+        data-view="status"
+        class="view-section space-y-6"
+      ></section>
+      <section
+        id="view-meals"
+        data-view="meals"
+        class="view-section space-y-6"
+      ></section>
+      <section
+        id="view-foods"
+        data-view="foods"
+        class="view-section space-y-6"
+      ></section>
+      <section
+        id="view-habits"
+        data-view="habits"
+        class="view-section space-y-6"
+      ></section>
+      <section
+        id="view-weight"
+        data-view="weight"
+        class="view-section space-y-6"
+      ></section>
+    </main>
+
+    <nav
+      class="safe-bottom fixed bottom-0 left-0 z-50 w-full border-t border-outline-variant bg-surface/90 shadow-[0_-8px_28px_rgba(26,27,35,0.08)] backdrop-blur-xl"
+    >
+      <div class="mx-auto grid h-20 max-w-lg grid-cols-5 items-center px-1">
+        <button
+          class="nav-button nav-active flex flex-col items-center justify-center gap-1 text-primary transition-colors duration-200"
+          data-view-target="status"
+          type="button"
+        >
+          <span class="material-symbols-outlined">dashboard</span>
+          <span class="text-[10px] font-medium">Status</span>
+        </button>
+        <button
+          class="nav-button flex flex-col items-center justify-center gap-1 text-on-surface-variant transition-colors duration-200 hover:text-primary"
+          data-view-target="meals"
+          type="button"
+        >
+          <span class="material-symbols-outlined">restaurant_menu</span>
+          <span class="text-[10px] font-medium">Meals</span>
+        </button>
+        <button
+          class="nav-button flex flex-col items-center justify-center gap-1 text-on-surface-variant transition-colors duration-200 hover:text-primary"
+          data-view-target="foods"
+          type="button"
+        >
+          <span class="material-symbols-outlined">fact_check</span>
+          <span class="text-[10px] font-medium">Foods</span>
+        </button>
+        <button
+          class="nav-button flex flex-col items-center justify-center gap-1 text-on-surface-variant transition-colors duration-200 hover:text-primary"
+          data-view-target="habits"
+          type="button"
+        >
+          <span class="material-symbols-outlined">task_alt</span>
+          <span class="text-[10px] font-medium">Habits</span>
+        </button>
+        <button
+          class="nav-button flex flex-col items-center justify-center gap-1 text-on-surface-variant transition-colors duration-200 hover:text-primary"
+          data-view-target="weight"
+          type="button"
+        >
+          <span class="material-symbols-outlined">monitor_weight</span>
+          <span class="text-[10px] font-medium">Weight</span>
+        </button>
+      </div>
+    </nav>
+
+    <div
+      id="toast"
+      class="pointer-events-none fixed left-1/2 top-5 z-[60] hidden -translate-x-1/2 rounded-full bg-on-surface px-4 py-2 text-sm font-medium text-surface shadow-[0_14px_30px_rgba(26,27,35,0.18)]"
+      role="status"
+      aria-live="polite"
+    ></div>
+
+    <script src="app.js"></script>
   </body>
 </html>
